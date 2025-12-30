@@ -1,6 +1,7 @@
 .hero-section {
     position: relative;
     min-height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,78 +10,7 @@
     background: transparent;
 }
 
-.hero-background {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-    background: transparent;
-    pointer-events: none;
-}
 
-.hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    transition: transform 0.3s ease-out;
-    will-change: transform;
-}
-
-.hero-orb-primary {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--accent-primary), transparent 70%);
-    top: -20%;
-    left: -10%;
-}
-
-.hero-orb-secondary {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, var(--accent-secondary), transparent 70%);
-    bottom: -20%;
-    right: -10%;
-}
-
-.hero-orb-tertiary {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, var(--gradient-end), transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.4;
-}
-
-.hero-particles {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.hero-particle {
-    position: absolute;
-    background: var(--accent-primary);
-    border-radius: 50%;
-    opacity: 0.4;
-    animation: hero-particle-pulse linear infinite;
-}
-
-@keyframes hero-particle-pulse {
-
-    0%,
-    100% {
-        opacity: 0.2;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.6;
-        transform: scale(1.2);
-    }
-}
 
 .hero-content {
     position: relative;

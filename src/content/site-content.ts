@@ -2,8 +2,8 @@ export const siteContent = {
     hero: {
         greeting: "Hello, I'm",
         name: "Marvel Collin",
-        titles: ["Creative", "Developer", "Designer"],
-        description: "Crafting digital experiences that blend aesthetics with functionality. Turning ideas into interactive realities.",
+        titles: [],
+        description: "I have no prime. I will forever evolve into a better version of myself.",
         cta: {
             primary: "View My Work",
             secondary: "Get In Touch"

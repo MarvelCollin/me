@@ -33,32 +33,7 @@ const HeroSection = () => {
         };
     }, []);
 
-    const particles = useMemo(() => {
-        const items = [];
-        for (let i = 0; i < 50; i++) {
-            const size = Math.random() * 4 + 1;
-            const left = Math.random() * 100;
-            const top = Math.random() * 100;
-            const delay = Math.random() * 5;
-            const duration = Math.random() * 10 + 10;
-
-            items.push(
-                <div
-                    key={i}
-                    className="hero-particle"
-                    style={{
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        left: `${left}%`,
-                        top: `${top}%`,
-                        animationDelay: `${delay}s`,
-                        animationDuration: `${duration}s`,
-                    }}
-                />
-            );
-        }
-        return items;
-    }, []);
+    // Interactive Canvas Effect - Moved to src/components/background.tsx
 
     return (
         <section className="hero-section" ref={heroRef} id="home">
@@ -78,19 +53,6 @@ const HeroSection = () => {
                             )
                         ))}
                     </h1>
-
-                    <div className="hero-title-wrapper">
-                        <div className="hero-title">
-                            {hero.titles.map((title, index) => (
-                                <span key={title}>
-                                    <span className={`hero-title-word ${index === 1 ? 'hero-title-word-accent' : ''}`}>{title}</span>
-                                    {index < hero.titles.length - 1 && (
-                                        <span className="hero-title-divider">•</span>
-                                    )}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
 
                     <p className="hero-description">
                         {hero.description}
@@ -163,5 +125,6 @@ const HeroSection = () => {
         </section>
     );
 };
+
 
 export default HeroSection;
