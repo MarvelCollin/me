@@ -16,6 +16,9 @@ const Background = () => {
         let particles: Particle[] = [];
         let mouseX = 0;
         let mouseY = 0;
+        let currentScrollY = 0;
+
+
 
         const resizeCanvas = () => {
             canvas.width = window.innerWidth;
@@ -31,6 +34,7 @@ const Background = () => {
             baseY: number;
             density: number;
             color: string;
+            speed: number;
 
             constructor(x: number, y: number) {
                 this.x = x;
@@ -39,6 +43,7 @@ const Background = () => {
                 this.baseY = y;
                 this.size = Math.random() * 2 + 1;
                 this.density = (Math.random() * 30) + 1;
+                this.speed = Math.random() * 0.8 + 0.2;
                 const colors = ['rgba(99, 102, 241, 0.5)', 'rgba(168, 85, 247, 0.5)', 'rgba(236, 72, 153, 0.5)'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
             }
@@ -47,14 +52,18 @@ const Background = () => {
                 if (!ctx) return;
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                const parallaxY = this.y - (currentScrollY * this.speed);
+
+                ctx.arc(this.x, parallaxY, this.size, 0, Math.PI * 2);
                 ctx.closePath();
                 ctx.fill();
             }
 
             update() {
+                const parallaxY = this.y - (currentScrollY * this.speed);
+
                 const dx = mouseX - this.x;
-                const dy = mouseY - this.y;
+                const dy = mouseY - parallaxY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 const forceDirectionX = dx / distance;
                 const forceDirectionY = dy / distance;
@@ -81,11 +90,12 @@ const Background = () => {
 
         const initParticles = () => {
             particles = [];
-            // Create a grid of particles
-            const numberOfParticles = (canvas.width * canvas.height) / 15000;
+            const extendedHeight = canvas.height * 4;
+            const numberOfParticles = (canvas.width * extendedHeight) / 15000;
+
             for (let i = 0; i < numberOfParticles; i++) {
                 const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
+                const y = Math.random() * extendedHeight - (canvas.height * 1.5);
                 particles.push(new Particle(x, y));
             }
         };
@@ -99,7 +109,6 @@ const Background = () => {
                 particles[i].update();
             }
 
-            // Connect particles
             connect();
 
             animationFrameId = requestAnimationFrame(animate);
@@ -109,8 +118,12 @@ const Background = () => {
             if (!ctx) return;
             for (let a = 0; a < particles.length; a++) {
                 for (let b = a; b < particles.length; b++) {
+                    const parallaxYA = particles[a].y - (currentScrollY * particles[a].speed);
+                    const parallaxYB = particles[b].y - (currentScrollY * particles[b].speed);
+
                     const dx = particles[a].x - particles[b].x;
-                    const dy = particles[a].y - particles[b].y;
+                    const dy = parallaxYA - parallaxYB;
+
                     const distance = dx * dx + dy * dy;
 
                     if (distance < (canvas.width / 7) * (canvas.height / 7)) {
@@ -119,8 +132,8 @@ const Background = () => {
                             ctx.strokeStyle = `rgba(140, 100, 255, ${opacity * 0.2})`;
                             ctx.lineWidth = 1;
                             ctx.beginPath();
-                            ctx.moveTo(particles[a].x, particles[a].y);
-                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.moveTo(particles[a].x, parallaxYA);
+                            ctx.lineTo(particles[b].x, parallaxYB);
                             ctx.stroke();
                         }
                     }
@@ -131,9 +144,14 @@ const Background = () => {
         const handleCanvasMouseMove = (e: MouseEvent) => {
             const rect = canvas.getBoundingClientRect();
             mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
+            mouseY = e.clientY - rect.top; // Mouse is relative to viewport
         };
 
+        const handleScroll = () => {
+            currentScrollY = window.scrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll);
         window.addEventListener('mousemove', handleCanvasMouseMove);
         window.addEventListener('resize', resizeCanvas);
 
@@ -143,6 +161,7 @@ const Background = () => {
         return () => {
             window.removeEventListener('mousemove', handleCanvasMouseMove);
             window.removeEventListener('resize', resizeCanvas);
+            window.removeEventListener('scroll', handleScroll);
             cancelAnimationFrame(animationFrameId);
         };
     }, []);

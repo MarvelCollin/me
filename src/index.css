@@ -26,8 +26,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  scroll-behavior: auto;
 }
 
 body {
@@ -63,9 +62,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--accent-secondary), var(--gradient-end));
-}
-
-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }

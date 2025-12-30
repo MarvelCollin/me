@@ -4,13 +4,18 @@ import WorkSection from './components/work-section';
 import Background from './components/background';
 import './App.css';
 
+import { useSoftSnap } from './hooks/use-soft-snap';
+
 function App() {
+  useSoftSnap();
   return (
-    <main>
+    <>
       <Background />
-      <HeroSection />
-      <WorkSection />
-    </main>
+      <main>
+        <HeroSection />
+        <WorkSection />
+      </main>
+    </>
   );
 }
 

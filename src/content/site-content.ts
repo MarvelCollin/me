@@ -9,9 +9,8 @@ export const siteContent = {
             secondary: "Get In Touch"
         },
         socials: {
-            github: "https://github.com",
-            linkedin: "https://linkedin.com",
-            twitter: "https://twitter.com"
+            github: "https://github.com/MarvelCollin",
+            linkedin: "https://www.linkedin.com/in/marvel-collin-0244a21ba/?originalSubdomain=id",
         }
     },
     works: [

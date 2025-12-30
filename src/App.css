@@ -1,10 +1,18 @@
 main {
-  min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  min-height: 100vh;
+  perspective: 2000px;
 }
 
 main>section {
   position: relative;
   z-index: 1;
+  margin-bottom: 200vh;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+main>section:last-child {
+  margin-bottom: 0;
 }
