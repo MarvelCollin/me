@@ -35,16 +35,18 @@ const Background = () => {
             density: number;
             color: string;
             speed: number;
+            waveOffset: number;
 
             constructor(x: number, y: number) {
                 this.x = x;
                 this.y = y;
                 this.baseX = x;
                 this.baseY = y;
-                this.size = Math.random() * 2 + 1;
+                this.size = Math.random() * 2.5 + 0.5;
                 this.density = (Math.random() * 30) + 1;
                 this.speed = Math.random() * 1.2 + 0.3;
-                const colors = ['rgba(99, 102, 241, 0.5)', 'rgba(168, 85, 247, 0.5)', 'rgba(236, 72, 153, 0.5)'];
+                this.waveOffset = Math.random() * Math.PI * 2;
+                const colors = ['rgba(99, 102, 241, 0.6)', 'rgba(168, 85, 247, 0.6)', 'rgba(236, 72, 153, 0.6)'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
             }
 
@@ -53,16 +55,18 @@ const Background = () => {
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
                 const parallaxY = this.y - (currentScrollY * this.speed);
+                const wave = Math.sin((currentScrollY * 0.001) + this.waveOffset) * 15;
 
-                ctx.arc(this.x, parallaxY, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x + wave, parallaxY, this.size, 0, Math.PI * 2);
                 ctx.closePath();
                 ctx.fill();
             }
 
             update() {
                 const parallaxY = this.y - (currentScrollY * this.speed);
+                const wave = Math.sin((currentScrollY * 0.001) + this.waveOffset) * 15;
 
-                const dx = mouseX - this.x;
+                const dx = mouseX - (this.x + wave);
                 const dy = mouseY - parallaxY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 const forceDirectionX = dx / distance;
@@ -90,8 +94,8 @@ const Background = () => {
 
         const initParticles = () => {
             particles = [];
-            const extendedHeight = canvas.height * 5;
-            const numberOfParticles = (canvas.width * extendedHeight) / 15000;
+            const extendedHeight = canvas.height * 6;
+            const numberOfParticles = (canvas.width * extendedHeight) / 12000;
 
             for (let i = 0; i < numberOfParticles; i++) {
                 const x = Math.random() * canvas.width;
@@ -118,10 +122,12 @@ const Background = () => {
             if (!ctx) return;
             for (let a = 0; a < particles.length; a++) {
                 for (let b = a; b < particles.length; b++) {
+                    const waveA = Math.sin((currentScrollY * 0.001) + particles[a].waveOffset) * 15;
+                    const waveB = Math.sin((currentScrollY * 0.001) + particles[b].waveOffset) * 15;
                     const parallaxYA = particles[a].y - (currentScrollY * particles[a].speed);
                     const parallaxYB = particles[b].y - (currentScrollY * particles[b].speed);
 
-                    const dx = particles[a].x - particles[b].x;
+                    const dx = (particles[a].x + waveA) - (particles[b].x + waveB);
                     const dy = parallaxYA - parallaxYB;
 
                     const distance = dx * dx + dy * dy;
@@ -129,11 +135,12 @@ const Background = () => {
                     if (distance < (canvas.width / 7) * (canvas.height / 7)) {
                         const opacity = 1 - (distance / 20000);
                         if (opacity > 0) {
-                            ctx.strokeStyle = `rgba(140, 100, 255, ${opacity * 0.2})`;
+                            const scrollFactor = Math.sin(currentScrollY * 0.0005) * 0.5 + 0.5;
+                            ctx.strokeStyle = `rgba(140, 100, 255, ${opacity * 0.25 * scrollFactor})`;
                             ctx.lineWidth = 1;
                             ctx.beginPath();
-                            ctx.moveTo(particles[a].x, parallaxYA);
-                            ctx.lineTo(particles[b].x, parallaxYB);
+                            ctx.moveTo(particles[a].x + waveA, parallaxYA);
+                            ctx.lineTo(particles[b].x + waveB, parallaxYB);
                             ctx.stroke();
                         }
                     }

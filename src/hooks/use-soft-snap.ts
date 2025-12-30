@@ -34,30 +34,19 @@ export const useSoftSnap = () => {
         const updateSectionPerspectives = () => {
             const sections = document.querySelectorAll('section');
             const viewportHeight = window.innerHeight;
-            const scrollY = window.scrollY;
 
             sections.forEach((section) => {
                 const rect = section.getBoundingClientRect();
                 const sectionCenter = rect.top + rect.height / 2;
                 const viewportCenter = viewportHeight / 2;
                 const distanceFromCenter = sectionCenter - viewportCenter;
-                const maxDistance = viewportHeight * 2.5;
+                const maxDistance = viewportHeight * 1.5;
                 const normalizedDistance = Math.max(-1, Math.min(1, distanceFromCenter / maxDistance));
                 
-                const scale = 1 - Math.abs(normalizedDistance) * 0.2;
-                const rotateX = normalizedDistance * 12;
-                const translateZ = -Math.abs(normalizedDistance) * 150;
-                const opacity = 1 - Math.abs(normalizedDistance) * 0.25;
+                const opacity = 1 - Math.abs(normalizedDistance) * 0.2;
                 
-                const section_elem = section as HTMLElement;
-                section_elem.style.transform = `perspective(2000px) rotateX(${rotateX}deg) scale(${scale}) translateZ(${translateZ}px)`;
-                section_elem.style.opacity = `${Math.max(0.6, opacity)}`;
-                
-                if (isSnapping.current) {
-                    section_elem.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                } else {
-                    section_elem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
-                }
+                (section as HTMLElement).style.opacity = `${Math.max(0.7, opacity)}`;
+                (section as HTMLElement).style.transition = 'opacity 0.15s ease-out';
             });
         };
 
