@@ -20,7 +20,12 @@ export const siteContent = {
             description: "A modern e-commerce solution with seamless checkout experience and real-time inventory management.",
             category: "Web Development",
             tags: ["React", "Node.js", "MongoDB"],
-            image: "https://picsum.photos/seed/ecommerce/800/600",
+            images: [
+                "https://picsum.photos/seed/ecommerce/800/600",
+                "https://picsum.photos/seed/ecommerce2/800/600",
+                "https://picsum.photos/seed/ecommerce3/800/600",
+                "https://picsum.photos/seed/ecommerce4/800/600"
+            ],
             link: "#",
             featured: true
         },
@@ -30,7 +35,12 @@ export const siteContent = {
             description: "Interactive dashboard for tracking investments, expenses, and financial goals with data visualization.",
             category: "UI/UX Design",
             tags: ["Figma", "React", "D3.js"],
-            image: "https://picsum.photos/seed/finance/800/600",
+            images: [
+                "https://picsum.photos/seed/finance/800/600",
+                "https://picsum.photos/seed/finance2/800/600",
+                "https://picsum.photos/seed/finance3/800/600",
+                "https://picsum.photos/seed/finance4/800/600"
+            ],
             link: "#",
             featured: true
         },
@@ -40,7 +50,12 @@ export const siteContent = {
             description: "Cross-platform fitness application with workout tracking, meal planning, and progress analytics.",
             category: "Mobile Development",
             tags: ["React Native", "Firebase"],
-            image: "https://picsum.photos/seed/fitness/800/600",
+            images: [
+                "https://picsum.photos/seed/fitness/800/600",
+                "https://picsum.photos/seed/fitness2/800/600",
+                "https://picsum.photos/seed/fitness3/800/600",
+                "https://picsum.photos/seed/fitness4/800/600"
+            ],
             link: "#",
             featured: true
         },
@@ -50,7 +65,12 @@ export const siteContent = {
             description: "AI-powered tool for generating marketing copy, blog posts, and social media content.",
             category: "AI/ML",
             tags: ["Python", "OpenAI", "FastAPI"],
-            image: "https://picsum.photos/seed/aitools/800/600",
+            images: [
+                "https://picsum.photos/seed/aitools/800/600",
+                "https://picsum.photos/seed/aitools2/800/600",
+                "https://picsum.photos/seed/aitools3/800/600",
+                "https://picsum.photos/seed/aitools4/800/600"
+            ],
             link: "#",
             featured: false
         },
@@ -60,7 +80,12 @@ export const siteContent = {
             description: "Property listing platform with virtual tours, mortgage calculator, and agent matching.",
             category: "Web Development",
             tags: ["Next.js", "PostgreSQL", "Stripe"],
-            image: "https://picsum.photos/seed/realestate/800/600",
+            images: [
+                "https://picsum.photos/seed/realestate/800/600",
+                "https://picsum.photos/seed/realestate2/800/600",
+                "https://picsum.photos/seed/realestate3/800/600",
+                "https://picsum.photos/seed/realestate4/800/600"
+            ],
             link: "#",
             featured: false
         },
@@ -70,7 +95,12 @@ export const siteContent = {
             description: "Complete brand identity design including logo, color system, typography, and guidelines.",
             category: "Branding",
             tags: ["Illustrator", "Figma"],
-            image: "https://picsum.photos/seed/branding/800/600",
+            images: [
+                "https://picsum.photos/seed/branding/800/600",
+                "https://picsum.photos/seed/branding2/800/600",
+                "https://picsum.photos/seed/branding3/800/600",
+                "https://picsum.photos/seed/branding4/800/600"
+            ],
             link: "#",
             featured: false
         }

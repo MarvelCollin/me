@@ -37,8 +37,17 @@ const techIconMap: Record<string, React.ComponentType> = {
 const WorkSection = () => {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [modalImage, setModalImage] = useState<string | null>(null);
 
     const { works } = siteContent;
+
+    const openModal = (imageSrc: string) => {
+        setModalImage(imageSrc);
+    };
+
+    const closeModal = () => {
+        setModalImage(null);
+    };
 
     const handleMouseMove = (e: React.MouseEvent, cardId: number) => {
         const card = e.currentTarget as HTMLElement;
@@ -83,11 +92,21 @@ const WorkSection = () => {
 
                             <div className="work-card-inner">
                                 <div className="work-card-image">
-                                    <img
-                                        src={work.image}
-                                        alt={work.title}
-                                        loading="lazy"
-                                    />
+                                    <div className="work-card-image-grid">
+                                        {work.images.map((image, imgIndex) => (
+                                            <div
+                                                key={imgIndex}
+                                                className="work-card-image-grid-item"
+                                                onDoubleClick={() => openModal(image)}
+                                            >
+                                                <img
+                                                    src={image}
+                                                    alt={`${work.title} - Image ${imgIndex + 1}`}
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                     <div className="work-card-image-overlay" />
                                 </div>
 
@@ -134,6 +153,19 @@ const WorkSection = () => {
                     </a>
                 </div>
             </div>
+
+            {modalImage && (
+                <div className="work-modal" onClick={closeModal}>
+                    <div className="work-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="work-modal-close" onClick={closeModal}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <img src={modalImage} alt="Full view" />
+                    </div>
+                </div>
+            )}
         </section>
     );
 };
