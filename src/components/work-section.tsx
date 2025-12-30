@@ -15,7 +15,7 @@ import {
     SiStripe,
     SiAdobeillustrator
 } from 'react-icons/si';
-import './work-section.css';
+import '../styles/work-section.css';
 
 const techIconMap: Record<string, React.ComponentType> = {
     'React': SiReact,

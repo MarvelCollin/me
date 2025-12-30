@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { siteContent } from '../content/site-content';
-import './hero-section.css';
+import '../styles/hero-section.css';
 
 const HeroSection = () => {
     const heroRef = useRef<HTMLDivElement>(null);
