@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { siteContent } from '../content/site-content';
+import type { Work } from '../content/site-content';
 import {
     SiReact,
     SiNodedotjs,
@@ -34,20 +35,15 @@ const techIconMap: Record<string, React.ComponentType> = {
     'Illustrator': SiAdobeillustrator,
 };
 
-const WorkSection = () => {
+interface WorkSectionProps {
+    onWorkClick: (work: Work) => void;
+}
+
+const WorkSection = ({ onWorkClick }: WorkSectionProps) => {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [modalImage, setModalImage] = useState<string | null>(null);
 
     const { works } = siteContent;
-
-    const openModal = (imageSrc: string) => {
-        setModalImage(imageSrc);
-    };
-
-    const closeModal = () => {
-        setModalImage(null);
-    };
 
     const handleMouseMove = (e: React.MouseEvent, cardId: number) => {
         const card = e.currentTarget as HTMLElement;
@@ -82,6 +78,7 @@ const WorkSection = () => {
                             className={`work-card work-card-${index + 1}`}
                             onMouseMove={(e) => handleMouseMove(e, work.id)}
                             onMouseLeave={() => setHoveredCard(null)}
+                            onClick={() => onWorkClick(work)}
                             style={{
                                 '--mouse-x': `${mousePos.x}%`,
                                 '--mouse-y': `${mousePos.y}%`,
@@ -97,7 +94,6 @@ const WorkSection = () => {
                                             <div
                                                 key={imgIndex}
                                                 className="work-card-image-grid-item"
-                                                onDoubleClick={() => openModal(image)}
                                             >
                                                 <img
                                                     src={image}
@@ -153,19 +149,6 @@ const WorkSection = () => {
                     </a>
                 </div>
             </div>
-
-            {modalImage && (
-                <div className="work-modal" onClick={closeModal}>
-                    <div className="work-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="work-modal-close" onClick={closeModal}>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <img src={modalImage} alt="Full view" />
-                    </div>
-                </div>
-            )}
         </section>
     );
 };
