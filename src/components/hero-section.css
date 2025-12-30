@@ -1,4 +1,4 @@
-.hero {
+.hero-section {
     position: relative;
     min-height: 100vh;
     display: flex;
@@ -18,7 +18,7 @@
     pointer-events: none;
 }
 
-.gradient-orb {
+.hero-orb {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
@@ -27,7 +27,7 @@
     will-change: transform;
 }
 
-.orb-1 {
+.hero-orb-primary {
     width: 600px;
     height: 600px;
     background: radial-gradient(circle, var(--accent-primary), transparent 70%);
@@ -35,7 +35,7 @@
     left: -10%;
 }
 
-.orb-2 {
+.hero-orb-secondary {
     width: 500px;
     height: 500px;
     background: radial-gradient(circle, var(--accent-secondary), transparent 70%);
@@ -43,7 +43,7 @@
     right: -10%;
 }
 
-.orb-3 {
+.hero-orb-tertiary {
     width: 400px;
     height: 400px;
     background: radial-gradient(circle, var(--gradient-end), transparent 70%);
@@ -53,26 +53,22 @@
     opacity: 0.4;
 }
 
-.grid-overlay {
-    display: none;
-}
-
-.particles {
+.hero-particles {
     position: absolute;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
 }
 
-.particle {
+.hero-particle {
     position: absolute;
     background: var(--accent-primary);
     border-radius: 50%;
     opacity: 0.4;
-    animation: particlePulse linear infinite;
+    animation: hero-particle-pulse linear infinite;
 }
 
-@keyframes particlePulse {
+@keyframes hero-particle-pulse {
 
     0%,
     100% {
@@ -84,14 +80,6 @@
         opacity: 0.6;
         transform: scale(1.2);
     }
-}
-
-.noise-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.03;
-    pointer-events: none;
 }
 
 .hero-content {
@@ -111,22 +99,22 @@
     gap: 1.5rem;
 }
 
-.greeting-container {
+.hero-greeting-container {
     display: flex;
     align-items: center;
     gap: 1rem;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 0.2s;
 }
 
-.greeting-line {
+.hero-greeting-line {
     width: 40px;
     height: 2px;
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
 }
 
-.greeting-text {
+.hero-greeting-text {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.1rem;
     color: var(--text-secondary);
@@ -138,22 +126,22 @@
     font-weight: 700;
     line-height: 1.1;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 0.4s;
 }
 
-.name-letter {
+.hero-name-letter {
     display: inline-block;
     transition: transform 0.3s ease, color 0.3s ease;
     cursor: default;
 }
 
-.name-letter:hover {
+.hero-name-letter:hover {
     transform: translateY(-8px) scale(1.1);
     color: var(--accent-primary);
 }
 
-.name-spacer {
+.hero-name-spacer {
     display: inline-block;
     width: 0.4em;
 }
@@ -161,7 +149,7 @@
 .hero-title-wrapper {
     padding: 0.5rem 0;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 0.6s;
 }
 
@@ -172,7 +160,7 @@
     flex-wrap: wrap;
 }
 
-.title-word {
+.hero-title-word {
     font-family: 'Inter', sans-serif;
     font-size: 1.25rem;
     font-weight: 500;
@@ -185,37 +173,40 @@
     transition: all 0.3s ease;
 }
 
-.title-word:hover {
+.hero-title-word:hover {
     background: rgba(99, 102, 241, 0.1);
     border-color: var(--accent-primary);
     color: var(--text-primary);
     transform: translateY(-2px);
 }
 
-.title-word.accent {
+.hero-title-word-accent {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
     border: none;
 }
 
-.title-word.accent:hover {
+.hero-title-word-accent:hover {
     box-shadow: 0 8px 30px var(--accent-glow);
 }
 
 .hero-description {
     max-width: 500px;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 0.8s;
 }
 
 .hero-cta-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 1s;
 }
 
-.cta-primary {
+.hero-cta-primary {
     position: relative;
     display: flex;
     align-items: center;
@@ -234,21 +225,21 @@
     text-decoration: none;
 }
 
-.cta-primary:hover {
+.hero-cta-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 40px var(--accent-glow);
 }
 
-.cta-primary .cta-icon {
+.hero-cta-primary-icon {
     display: flex;
     transition: transform 0.3s ease;
 }
 
-.cta-primary:hover .cta-icon {
+.hero-cta-primary:hover .hero-cta-primary-icon {
     transform: translateX(5px);
 }
 
-.cta-glow {
+.hero-cta-glow {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
@@ -256,11 +247,11 @@
     transition: transform 0.6s ease;
 }
 
-.cta-primary:hover .cta-glow {
+.hero-cta-primary:hover .hero-cta-glow {
     transform: translateX(100%);
 }
 
-.cta-secondary {
+.hero-cta-secondary {
     padding: 1rem 2rem;
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
@@ -273,19 +264,22 @@
     transition: all 0.3s ease;
 }
 
-.cta-secondary:hover {
+.hero-cta-secondary:hover {
     border-color: var(--accent-primary);
     background: rgba(99, 102, 241, 0.1);
     transform: translateY(-3px);
 }
 
 .hero-social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 1.2s;
 }
 
-.social-link {
+.hero-social-link {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -299,7 +293,7 @@
     transition: all 0.3s ease;
 }
 
-.social-link:hover {
+.hero-social-link:hover {
     color: var(--text-primary);
     border-color: var(--accent-primary);
     background: rgba(99, 102, 241, 0.1);
@@ -311,11 +305,11 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    animation: fadeInScale 1s ease forwards;
+    animation: hero-fade-in-scale 1s ease forwards;
     animation-delay: 0.6s;
 }
 
-.visual-container {
+.hero-visual-container {
     position: relative;
     width: 400px;
     height: 400px;
@@ -326,32 +320,32 @@
     will-change: transform;
 }
 
-.visual-ring {
+.hero-visual-ring {
     position: absolute;
     border-radius: 50%;
     border: 1px solid var(--glass-border);
 }
 
-.ring-1 {
+.hero-visual-ring-1 {
     width: 100%;
     height: 100%;
-    animation: ringRotate 20s linear infinite;
+    animation: hero-ring-rotate 20s linear infinite;
 }
 
-.ring-2 {
+.hero-visual-ring-2 {
     width: 75%;
     height: 75%;
-    animation: ringRotate 15s linear infinite reverse;
+    animation: hero-ring-rotate 15s linear infinite reverse;
     border-style: dashed;
 }
 
-.ring-3 {
+.hero-visual-ring-3 {
     width: 50%;
     height: 50%;
-    animation: ringRotate 10s linear infinite;
+    animation: hero-ring-rotate 10s linear infinite;
 }
 
-@keyframes ringRotate {
+@keyframes hero-ring-rotate {
     from {
         transform: rotate(0deg);
     }
@@ -361,7 +355,7 @@
     }
 }
 
-.visual-core {
+.hero-visual-core {
     position: relative;
     width: 160px;
     height: 160px;
@@ -374,15 +368,15 @@
     overflow: hidden;
 }
 
-.core-gradient {
+.hero-visual-core-gradient {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--gradient-end));
     opacity: 0.15;
-    animation: coreGlow 3s ease-in-out infinite alternate;
+    animation: hero-core-glow 3s ease-in-out infinite alternate;
 }
 
-@keyframes coreGlow {
+@keyframes hero-core-glow {
     from {
         opacity: 0.1;
     }
@@ -392,7 +386,7 @@
     }
 }
 
-.core-text {
+.hero-visual-core-text {
     position: relative;
     font-family: 'Space Grotesk', sans-serif;
     font-size: 2.5rem;
@@ -403,7 +397,7 @@
     background-clip: text;
 }
 
-.scroll-indicator {
+.hero-scroll-indicator {
     position: absolute;
     bottom: 2rem;
     left: 50%;
@@ -413,11 +407,11 @@
     align-items: center;
     gap: 0.75rem;
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    animation: hero-fade-in-up 0.8s ease forwards;
     animation-delay: 1.5s;
 }
 
-.scroll-mouse {
+.hero-scroll-mouse {
     width: 26px;
     height: 40px;
     border: 2px solid var(--glass-border);
@@ -427,15 +421,22 @@
     padding-top: 8px;
 }
 
-.scroll-wheel {
+.hero-scroll-wheel {
     width: 4px;
     height: 8px;
     background: var(--accent-primary);
     border-radius: 2px;
-    animation: scrollBounce 1.5s ease-in-out infinite;
+    animation: hero-scroll-bounce 1.5s ease-in-out infinite;
 }
 
-@keyframes scrollBounce {
+.hero-scroll-text {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+@keyframes hero-scroll-bounce {
 
     0%,
     100% {
@@ -449,7 +450,7 @@
     }
 }
 
-@keyframes fadeInUp {
+@keyframes hero-fade-in-up {
     from {
         opacity: 0;
         transform: translateY(30px);
@@ -461,7 +462,7 @@
     }
 }
 
-@keyframes fadeInScale {
+@keyframes hero-fade-in-scale {
     from {
         opacity: 0;
         transform: scale(0.9);
@@ -483,7 +484,7 @@
         align-items: center;
     }
 
-    .greeting-container {
+    .hero-greeting-container {
         justify-content: center;
     }
 
@@ -503,23 +504,23 @@
         order: -1;
     }
 
-    .visual-container {
+    .hero-visual-container {
         width: 300px;
         height: 300px;
     }
 
-    .visual-core {
+    .hero-visual-core {
         width: 120px;
         height: 120px;
     }
 
-    .core-text {
+    .hero-visual-core-text {
         font-size: 2rem;
     }
 }
 
 @media (max-width: 640px) {
-    .hero {
+    .hero-section {
         padding: 1rem;
     }
 
@@ -527,7 +528,7 @@
         justify-content: center;
     }
 
-    .title-word {
+    .hero-title-word {
         font-size: 1rem;
         padding: 0.4rem 0.8rem;
     }
@@ -538,23 +539,23 @@
         max-width: 300px;
     }
 
-    .cta-primary,
-    .cta-secondary {
+    .hero-cta-primary,
+    .hero-cta-secondary {
         width: 100%;
         justify-content: center;
     }
 
-    .visual-container {
+    .hero-visual-container {
         width: 250px;
         height: 250px;
     }
 
-    .visual-core {
+    .hero-visual-core {
         width: 100px;
         height: 100px;
     }
 
-    .core-text {
+    .hero-visual-core-text {
         font-size: 1.5rem;
     }
 }

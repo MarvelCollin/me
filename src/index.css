@@ -32,7 +32,7 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--bg-primary);
+  background: transparent;
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;

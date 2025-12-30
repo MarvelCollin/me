@@ -6,17 +6,9 @@
     background: transparent;
 }
 
-.work-bg-gradient {
-    display: none;
-}
-
-.work-bg-mesh {
-    display: none;
-}
-
 .work-container {
     position: relative;
-    z-index: 2;
+    z-index: 1;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -26,7 +18,7 @@
     margin-bottom: 5rem;
 }
 
-.header-decoration {
+.work-header-decoration {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,13 +26,13 @@
     margin-bottom: 2rem;
 }
 
-.deco-line {
+.work-header-line {
     width: 60px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
 }
 
-.deco-dot {
+.work-header-dot {
     width: 8px;
     height: 8px;
     background: var(--accent-primary);
@@ -48,7 +40,7 @@
     box-shadow: 0 0 20px var(--accent-glow);
 }
 
-.section-title {
+.work-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 700;
@@ -57,28 +49,28 @@
     letter-spacing: -0.02em;
 }
 
-.text-gradient {
+.work-title-gradient {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--gradient-end) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.section-description {
+.work-description {
     font-size: 1.2rem;
     color: var(--text-secondary);
     max-width: 500px;
     margin: 0 auto;
 }
 
-.bento-grid {
+.work-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: minmax(200px, auto);
     gap: 1.5rem;
 }
 
-.bento-card {
+.work-card {
     position: relative;
     border-radius: 24px;
     overflow: hidden;
@@ -86,42 +78,42 @@
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.bento-card:hover {
+.work-card:hover {
     transform: translateY(-8px) scale(1.02);
     z-index: 10;
 }
 
-.bento-1 {
+.work-card-1 {
     grid-column: span 7;
     grid-row: span 2;
 }
 
-.bento-2 {
+.work-card-2 {
     grid-column: span 5;
     grid-row: span 1;
 }
 
-.bento-3 {
+.work-card-3 {
     grid-column: span 5;
     grid-row: span 1;
 }
 
-.bento-4 {
+.work-card-4 {
     grid-column: span 4;
     grid-row: span 2;
 }
 
-.bento-5 {
+.work-card-5 {
     grid-column: span 4;
     grid-row: span 1;
 }
 
-.bento-6 {
+.work-card-6 {
     grid-column: span 4;
     grid-row: span 1;
 }
 
-.card-glow {
+.work-card-glow {
     position: absolute;
     inset: 0;
     opacity: 0;
@@ -132,11 +124,11 @@
     z-index: 1;
 }
 
-.card-glow.active {
+.work-card-glow-active {
     opacity: 1;
 }
 
-.card-border {
+.work-card-border {
     position: absolute;
     inset: 0;
     border-radius: 24px;
@@ -152,64 +144,64 @@
     z-index: 3;
 }
 
-.bento-card:hover .card-border {
+.work-card:hover .work-card-border {
     background: linear-gradient(135deg,
             rgba(99, 102, 241, 0.6),
             rgba(139, 92, 246, 0.4),
             rgba(236, 72, 153, 0.3));
 }
 
-.card-inner {
+.work-card-inner {
     position: relative;
     z-index: 2;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(15, 15, 25, 0.95));
-    backdrop-filter: blur(20px);
+    background: transparent;
     border-radius: 24px;
+    border: 1px solid var(--glass-border);
 }
 
-.card-image {
+.work-card-image {
     position: relative;
     flex: 1;
     min-height: 180px;
     overflow: hidden;
 }
 
-.card-image img {
+.work-card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.bento-card:hover .card-image img {
+.work-card:hover .work-card-image img {
     transform: scale(1.1);
 }
 
-.image-overlay {
+.work-card-image-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg,
             transparent 0%,
-            rgba(15, 15, 25, 0.4) 50%,
-            rgba(15, 15, 25, 0.95) 100%);
+            transparent 70%,
+            rgba(0, 0, 0, 0.4) 100%);
     transition: opacity 0.4s ease;
 }
 
-.bento-card:hover .image-overlay {
+.work-card:hover .work-card-image-overlay {
     background: linear-gradient(180deg,
-            rgba(99, 102, 241, 0.1) 0%,
-            rgba(15, 15, 25, 0.5) 50%,
-            rgba(15, 15, 25, 0.98) 100%);
+            rgba(99, 102, 241, 0.05) 0%,
+            transparent 70%,
+            rgba(0, 0, 0, 0.5) 100%);
 }
 
-.card-content {
+.work-card-content {
     padding: 1.5rem 2rem 2rem;
 }
 
-.card-number {
+.work-card-number {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
@@ -218,7 +210,7 @@
     opacity: 0.7;
 }
 
-.card-title {
+.work-card-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
@@ -227,14 +219,14 @@
     transition: color 0.3s ease;
 }
 
-.bento-card:hover .card-title {
+.work-card:hover .work-card-title {
     background: linear-gradient(90deg, var(--text-primary), var(--accent-primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.card-description {
+.work-card-description {
     font-size: 0.95rem;
     color: var(--text-secondary);
     line-height: 1.6;
@@ -245,17 +237,17 @@
     overflow: hidden;
 }
 
-.bento-1 .card-description {
+.work-card-1 .work-card-description {
     -webkit-line-clamp: 3;
 }
 
-.card-tech-stack {
+.work-card-tech-stack {
     display: flex;
     gap: 0.75rem;
     margin-bottom: 1.25rem;
 }
 
-.tech-icon {
+.work-card-tech-icon {
     width: 28px;
     height: 28px;
     display: flex;
@@ -269,19 +261,19 @@
     transition: all 0.3s ease;
 }
 
-.tech-icon svg {
+.work-card-tech-icon svg {
     width: 100%;
     height: 100%;
 }
 
-.bento-card:hover .tech-icon {
+.work-card:hover .work-card-tech-icon {
     border-color: rgba(99, 102, 241, 0.4);
     background: rgba(99, 102, 241, 0.15);
     color: var(--accent-primary);
     transform: translateY(-2px);
 }
 
-.card-link {
+.work-card-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -292,15 +284,15 @@
     transition: all 0.3s ease;
 }
 
-.card-link:hover {
+.work-card-link:hover {
     color: var(--accent-primary);
 }
 
-.card-link svg {
+.work-card-link svg {
     transition: transform 0.3s ease;
 }
 
-.card-link:hover svg {
+.work-card-link:hover svg {
     transform: translate(3px, -3px);
 }
 
@@ -310,7 +302,7 @@
     margin-top: 4rem;
 }
 
-.see-all-link {
+.work-footer-link {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -326,37 +318,37 @@
     transition: all 0.4s ease;
 }
 
-.see-all-link:hover {
+.work-footer-link:hover {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     border-color: transparent;
     transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
 }
 
-.link-arrow {
+.work-footer-link-arrow {
     display: flex;
     transition: transform 0.3s ease;
 }
 
-.see-all-link:hover .link-arrow {
+.work-footer-link:hover .work-footer-link-arrow {
     transform: translateX(5px);
 }
 
 @media (max-width: 1024px) {
-    .bento-grid {
+    .work-grid {
         grid-template-columns: repeat(6, 1fr);
     }
 
-    .bento-1,
-    .bento-4 {
+    .work-card-1,
+    .work-card-4 {
         grid-column: span 6;
         grid-row: span 1;
     }
 
-    .bento-2,
-    .bento-3,
-    .bento-5,
-    .bento-6 {
+    .work-card-2,
+    .work-card-3,
+    .work-card-5,
+    .work-card-6 {
         grid-column: span 3;
     }
 }
@@ -366,26 +358,26 @@
         padding: 4rem 1rem;
     }
 
-    .bento-grid {
+    .work-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
 
-    .bento-1,
-    .bento-2,
-    .bento-3,
-    .bento-4,
-    .bento-5,
-    .bento-6 {
+    .work-card-1,
+    .work-card-2,
+    .work-card-3,
+    .work-card-4,
+    .work-card-5,
+    .work-card-6 {
         grid-column: span 1;
         grid-row: span 1;
     }
 
-    .card-content {
+    .work-card-content {
         padding: 1.25rem;
     }
 
-    .card-title {
+    .work-card-title {
         font-size: 1.25rem;
     }
 }
