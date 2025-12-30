@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { Work } from '../content/site-content';
+import { siteContent } from '../content/site-content';
 import {
     SiReact,
     SiNodedotjs,
@@ -38,10 +39,16 @@ const techIconMap: Record<string, React.ComponentType> = {
 interface WorkDetailProps {
     work: Work;
     onBack: () => void;
+    onWorkClick: (work: Work) => void;
 }
 
-const WorkDetail = ({ work, onBack }: WorkDetailProps) => {
+const WorkDetail = ({ work, onBack, onWorkClick }: WorkDetailProps) => {
     const [activeImage, setActiveImage] = useState(0);
+    const otherWorks = siteContent.works.filter(w => w.id !== work.id).slice(0, 3);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [work.id]);
 
     return (
         <div className="work-detail-page">
@@ -78,40 +85,55 @@ const WorkDetail = ({ work, onBack }: WorkDetailProps) => {
                         {work.tags.map((tag, index) => {
                             const IconComponent = techIconMap[tag];
                             const angle = (index / work.tags.length) * Math.PI * 2;
-                            const radius = 100;
-                            const x = Math.cos(angle) * radius;
-                            const y = Math.sin(angle) * radius;
+                            const baseRadius = 80;
+                            const x = Math.cos(angle) * baseRadius;
+                            const y = Math.sin(angle) * baseRadius;
+                            
+                            const floatOffset = 12;
+                            const floatAngle = angle + Math.PI / 4;
+                            const floatX = Math.cos(floatAngle) * floatOffset;
+                            const floatY = Math.sin(floatAngle) * floatOffset;
                             
                             return IconComponent ? (
                                 <motion.div
                                     key={tag}
                                     className="work-detail-tech-sphere"
-                                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                                    initial={{ opacity: 0, scale: 0 }}
                                     animate={{ 
                                         opacity: 1, 
-                                        scale: 1,
-                                        x: x,
-                                        y: y
+                                        scale: 1
                                     }}
                                     transition={{
-                                        opacity: { duration: 0.6, delay: index * 0.15 },
-                                        scale: { duration: 0.6, delay: index * 0.15 },
-                                        x: { duration: 1, delay: index * 0.15, ease: "easeOut" },
-                                        y: { duration: 1, delay: index * 0.15, ease: "easeOut" }
+                                        opacity: { duration: 0.5, delay: index * 0.1 },
+                                        scale: { duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 200 }
+                                    }}
+                                    style={{
+                                        left: `calc(50% + ${x}px)`,
+                                        top: `calc(50% + ${y}px)`,
                                     }}
                                     whileHover={{
                                         scale: 1.3,
-                                        rotateY: 360,
-                                        transition: { duration: 0.6 }
+                                        transition: { duration: 0.3 }
                                     }}
                                 >
-                                    <div className="work-detail-tech-sphere-inner">
+                                    <motion.div
+                                        className="work-detail-tech-sphere-inner"
+                                        animate={{
+                                            x: [0, floatX, 0, -floatX, 0],
+                                            y: [0, floatY, 0, -floatY, 0]
+                                        }}
+                                        transition={{
+                                            duration: 8 + index * 0.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
                                         <div className="work-detail-tech-sphere-icon">
                                             <IconComponent />
                                         </div>
                                         <div className="work-detail-tech-sphere-glow" />
                                         <div className="work-detail-tech-sphere-ring" />
-                                    </div>
+                                    </motion.div>
                                     <span className="work-detail-tech-sphere-label">{tag}</span>
                                 </motion.div>
                             ) : null;
@@ -134,6 +156,38 @@ const WorkDetail = ({ work, onBack }: WorkDetailProps) => {
                             </button>
                         ))}
                     </div>
+                </div>
+            </div>
+
+            <div className="work-detail-other-projects">
+                <h2 className="work-detail-other-title">Other Projects</h2>
+                <div className="work-detail-other-grid">
+                    {otherWorks.map((otherWork, index) => (
+                        <motion.div
+                            key={otherWork.id}
+                            className="work-detail-other-card"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1, duration: 0.5 }}
+                            onClick={() => onWorkClick(otherWork)}
+                        >
+                            <div className="work-detail-other-image">
+                                <img src={otherWork.images[0]} alt={otherWork.title} />
+                                <div className="work-detail-other-overlay">
+                                    <span className="work-detail-other-view">View Project</span>
+                                </div>
+                            </div>
+                            <div className="work-detail-other-content">
+                                <h3 className="work-detail-other-name">{otherWork.title}</h3>
+                                <p className="work-detail-other-desc">{otherWork.description}</p>
+                                <div className="work-detail-other-tags">
+                                    {otherWork.tags.slice(0, 3).map(tag => (
+                                        <span key={tag} className="work-detail-other-tag">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </div>

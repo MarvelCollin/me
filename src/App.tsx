@@ -17,7 +17,11 @@ function App() {
       <Background />
       <main>
         {selectedWork ? (
-          <WorkDetail work={selectedWork} onBack={() => setSelectedWork(null)} />
+          <WorkDetail 
+            work={selectedWork} 
+            onBack={() => setSelectedWork(null)}
+            onWorkClick={setSelectedWork}
+          />
         ) : (
           <>
             <HeroSection />
