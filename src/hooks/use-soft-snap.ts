@@ -41,22 +41,23 @@ export const useSoftSnap = () => {
                 const sectionCenter = rect.top + rect.height / 2;
                 const viewportCenter = viewportHeight / 2;
                 const distanceFromCenter = sectionCenter - viewportCenter;
-                const maxDistance = viewportHeight * 2;
+                const maxDistance = viewportHeight * 2.5;
                 const normalizedDistance = Math.max(-1, Math.min(1, distanceFromCenter / maxDistance));
                 
-                const scale = 1 - Math.abs(normalizedDistance) * 0.15;
-                const rotateX = normalizedDistance * 8;
-                const translateZ = -Math.abs(normalizedDistance) * 100;
-                const opacity = 1 - Math.abs(normalizedDistance) * 0.3;
+                const scale = 1 - Math.abs(normalizedDistance) * 0.2;
+                const rotateX = normalizedDistance * 12;
+                const translateZ = -Math.abs(normalizedDistance) * 150;
+                const opacity = 1 - Math.abs(normalizedDistance) * 0.25;
                 
-                (section as HTMLElement).style.transform = `
-                    perspective(2000px) 
-                    rotateX(${rotateX}deg) 
-                    scale(${scale}) 
-                    translateZ(${translateZ}px)
-                `;
-                (section as HTMLElement).style.opacity = `${Math.max(0.4, opacity)}`;
-                (section as HTMLElement).style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+                const section_elem = section as HTMLElement;
+                section_elem.style.transform = `perspective(2000px) rotateX(${rotateX}deg) scale(${scale}) translateZ(${translateZ}px)`;
+                section_elem.style.opacity = `${Math.max(0.6, opacity)}`;
+                
+                if (isSnapping.current) {
+                    section_elem.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                } else {
+                    section_elem.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+                }
             });
         };
 
@@ -64,51 +65,63 @@ export const useSoftSnap = () => {
             const sections = document.querySelectorAll('section');
             const scrollY = window.scrollY;
             const viewportHeight = window.innerHeight;
+            const viewportTop = scrollY;
+            const viewportBottom = scrollY + viewportHeight;
 
-            let currentSectionIndex = -1;
+            let closestSection: HTMLElement | null = null;
+            let closestIndex = -1;
             let minDistance = Infinity;
-            
+
             sections.forEach((section, index) => {
                 const rect = section.getBoundingClientRect();
-                const sectionCenter = rect.top + rect.height / 2;
-                const distance = Math.abs(sectionCenter);
+                const sectionTop = rect.top + scrollY;
+                const sectionBottom = sectionTop + rect.height;
                 
+                const distance = Math.min(
+                    Math.abs(viewportTop - sectionTop),
+                    Math.abs(viewportBottom - sectionBottom),
+                    Math.abs(viewportTop - sectionBottom),
+                    Math.abs(viewportBottom - sectionTop)
+                );
+
                 if (distance < minDistance) {
                     minDistance = distance;
-                    currentSectionIndex = index;
+                    closestSection = section as HTMLElement;
+                    closestIndex = index;
                 }
             });
 
-            if (currentSectionIndex === -1) return;
+            if (closestIndex === -1 || !closestSection) return;
 
-            const currentSection = sections[currentSectionIndex] as HTMLElement;
-            const rect = currentSection.getBoundingClientRect();
+            const rect = closestSection.getBoundingClientRect();
             const sectionTop = rect.top + scrollY;
-            const scrollProgress = (scrollY - sectionTop) / rect.height;
+            const sectionHeight = rect.height;
+            const relativeScrollPos = scrollY - sectionTop;
 
             let targetSection: HTMLElement | null = null;
 
-            if (scrollDirection.current === 'down' && scrollProgress > 0.12) {
-                if (currentSectionIndex < sections.length - 1) {
-                    targetSection = sections[currentSectionIndex + 1] as HTMLElement;
+            if (scrollDirection.current === 'down') {
+                if (relativeScrollPos > sectionHeight * 0.3) {
+                    if (closestIndex < sections.length - 1) {
+                        targetSection = sections[closestIndex + 1] as HTMLElement;
+                    }
+                } else if (relativeScrollPos < -viewportHeight * 0.2) {
+                    targetSection = closestSection;
                 }
-            } else if (scrollDirection.current === 'up' && scrollProgress < 0.88) {
-                if (scrollProgress < 0.5 && currentSectionIndex > 0) {
-                    targetSection = sections[currentSectionIndex - 1] as HTMLElement;
+            } else if (scrollDirection.current === 'up') {
+                if (relativeScrollPos < sectionHeight * 0.3) {
+                    if (closestIndex > 0) {
+                        targetSection = sections[closestIndex - 1] as HTMLElement;
+                    }
+                } else if (relativeScrollPos > sectionHeight + viewportHeight * 0.2) {
+                    targetSection = closestSection;
                 }
-            }
-
-            if (!targetSection && Math.abs(rect.top) > 10) {
-                targetSection = currentSection;
             }
 
             if (targetSection) {
                 isSnapping.current = true;
                 targetSection.scrollIntoView({ behavior: 'smooth' });
-                
-                setTimeout(() => {
-                    isSnapping.current = false;
-                }, 1000);
+                setTimeout(() => { isSnapping.current = false; }, 1000);
             }
         };
 

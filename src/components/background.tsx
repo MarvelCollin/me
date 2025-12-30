@@ -43,7 +43,7 @@ const Background = () => {
                 this.baseY = y;
                 this.size = Math.random() * 2 + 1;
                 this.density = (Math.random() * 30) + 1;
-                this.speed = Math.random() * 0.8 + 0.2;
+                this.speed = Math.random() * 1.2 + 0.3;
                 const colors = ['rgba(99, 102, 241, 0.5)', 'rgba(168, 85, 247, 0.5)', 'rgba(236, 72, 153, 0.5)'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
             }
@@ -90,12 +90,12 @@ const Background = () => {
 
         const initParticles = () => {
             particles = [];
-            const extendedHeight = canvas.height * 4;
+            const extendedHeight = canvas.height * 5;
             const numberOfParticles = (canvas.width * extendedHeight) / 15000;
 
             for (let i = 0; i < numberOfParticles; i++) {
                 const x = Math.random() * canvas.width;
-                const y = Math.random() * extendedHeight - (canvas.height * 1.5);
+                const y = Math.random() * extendedHeight - (canvas.height * 2);
                 particles.push(new Particle(x, y));
             }
         };
