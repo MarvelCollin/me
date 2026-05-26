@@ -1,0 +1,13 @@
+import type { Project } from '../types';
+import { TONES } from '../content/projects';
+
+export function Thumbnail({ p }: { p: Project }) {
+  const tone = TONES[p.tone] || TONES['warm'];
+  return (
+    <span className="ph-wrap" style={{ position: 'absolute', inset: 0, display: 'block' }}>
+      {p.cover && <img src={p.cover} alt={p.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />}
+      <span style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at ${tone.pos}, ${tone.glow} 0%, transparent 55%), linear-gradient(180deg, ${tone.tint}, transparent 70%)` }}></span>
+      <span className="ph-tex"></span>
+    </span>
+  );
+}

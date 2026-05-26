@@ -1,15 +1,31 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio</title>
-    <meta name="description" content="Creative Developer Portfolio - Crafting digital experiences" />
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Marvel Collin, Full-stack developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="cur" id="cur"></div>
+<nav class="top">
+  <a href="#/" class="brand">Marvel Collin<span class="sep">·</span><span class="role">Full-stack developer</span></a>
+  <ul id="nav-ul">
+    <li><a href="#/" data-route="/">Index</a></li>
+    <li><a href="#/work" data-route="/work">Work</a></li>
+    <li><a href="#/about" data-route="/about">About</a></li>
+    <li><a href="#/contact" data-route="/contact">Contact</a></li>
+  </ul>
+  <div class="right">Jakarta · GMT+7 · <span class="here" id="clock">--:--</span></div>
+</nav>
+<main id="app"></main>
+<footer>
+  <span>© 2026 Marvel Collin</span>
+  <span>Currently building at <a href="#">stealth devtools</a></span>
+  <span>hello@marvel.dev</span>
+</footer>
+<script type="module" src="/src/main.tsx"></script>
+</body>
 </html>
