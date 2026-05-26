@@ -4,43 +4,44 @@ export function About() {
   return (
     <div data-screen-label="About">
       <section className="page">
-        <div className="about-grid">
+        <div className="about-bio">
+          <p className="about-lede">
+            I'm Marvel, a full-stack developer who spends too long on the typography. Seven years in, ten projects deep, still in love with the part where a button finally feels right.
+          </p>
+          <p className="about-body">
+            I work across the stack, interface to index. I prefer projects where I can touch the database and the kerning in the same week, and I take typography about as seriously as performance. Outside the editor: bad coffee, good light, a worrying number of bookmarks.
+          </p>
+          <p className="about-body">
+            I write occasionally, ship monthly, and answer email within a working day.
+          </p>
+        </div>
+        <div className="about-strip">
           <div>
-            <p className="about-lede">
-              <b>I'm Marvel</b>, a full-stack developer who spends too long on the typography. Seven years in, ten projects deep, still in love with the part where <span className="ac">a button finally feels right</span>.
-            </p>
-            <p style={{ marginTop: 24, fontSize: 18, lineHeight: 1.55, color: 'var(--fg-dim)', maxWidth: '54ch' }}>
-              I work across the stack, interface to index. I prefer projects where I can touch the database and the kerning in the same week, and I take typography about as seriously as performance. Outside the editor: bad coffee, good light, a worrying number of bookmarks.
-            </p>
-            <p style={{ marginTop: 14, fontSize: 18, lineHeight: 1.55, color: 'var(--fg-dim)', maxWidth: '54ch' }}>
-              I write occasionally, ship monthly, and answer email within a working day.
-            </p>
+            <span className="about-k">Now</span>
+            <span>Founding engineer, stealth devtools.</span>
           </div>
-          <aside className="about-aside">
-            <div className="item">
-              <div className="k">Now</div>
-              <div className="v">Founding engineer at a <a href="#">stealth devtools</a> company.</div>
+          <div>
+            <span className="about-k">Based</span>
+            <span>Jakarta, Indonesia · GMT+7</span>
+          </div>
+          <div>
+            <span className="about-k">Available</span>
+            <span>Q3 to Q4 2026</span>
+          </div>
+          <div>
+            <span className="about-k">Elsewhere</span>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a href="#">github</a>
+              <a href="#">read.cv</a>
+              <a href="#">are.na</a>
+              <a href="#">twitter</a>
             </div>
-            <div className="item">
-              <div className="k">Based</div>
-              <div className="v">Jakarta, Indonesia · GMT+7</div>
-            </div>
-            <div className="item">
-              <div className="k">Available</div>
-              <div className="v">Q3 to Q4 2026, for selected work.</div>
-            </div>
-            <div className="item">
-              <div className="k">Elsewhere</div>
-              <div className="v">
-                <a href="#">github</a> · <a href="#">read.cv</a> · <a href="#">are.na</a> · <a href="#">twitter</a>
-              </div>
-            </div>
-          </aside>
+          </div>
         </div>
         <div className="about-section">
           <div className="sec-label">
-            <span className="l">What the hands know</span>
-            <span className="r">Ten disciplines · honest opinions</span>
+            <span className="l">Skills</span>
+            <span className="r">2018 to now</span>
           </div>
           <div className="skills-list">
             {SKILLS.map((s, i) => (
@@ -70,8 +71,8 @@ export function About() {
         </div>
         <div className="about-section">
           <div className="sec-label">
-            <span className="l">Awards</span>
-            <span className="r">Six commendations, six honest reactions</span>
+            <span className="l">Recognition</span>
+            <span className="r">2020 to 2024</span>
           </div>
           <div className="awards">
             {AWARDS.map((a, i) => (
