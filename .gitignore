@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 .env
-supabase/schema.sql
+supabase/
 
 # Editor directories and files
 .vscode/*

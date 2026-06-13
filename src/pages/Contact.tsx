@@ -2,25 +2,24 @@ export function Contact() {
   return (
     <div data-screen-label="Contact">
       <section className="contact">
-        <a className="contact-email" href="mailto:hello@marvel.dev">hello@marvel.dev</a>
+        <a className="contact-email" href="mailto:marvelcollin7@gmail.com">marvelcollin7@gmail.com</a>
         <p className="contact-note">
-          I take on contract work with studios, founders, and small teams. Send a brief in any format and I'll reply within a working day.
+          Open to collaborations, freelance, and interesting projects. Reach me on any of these and I'll get back to you.
         </p>
         <div className="contact-links">
-          <a href="#">github</a>
-          <a href="#">twitter</a>
-          <a href="#">read.cv</a>
-          <a href="#">are.na</a>
+          <a href="https://github.com/MarvelCollin" target="_blank" rel="noreferrer">github</a>
+          <a href="https://www.linkedin.com/in/marvel-collin-0244a21ba/" target="_blank" rel="noreferrer">linkedin</a>
+          <a href="https://www.instagram.com/marvelcolin_/" target="_blank" rel="noreferrer">instagram</a>
         </div>
         <div className="contact-meta">
           <span>Jakarta, Indonesia · GMT+7</span>
-          <span>Open Q3 to Q4 2026</span>
-          <span>Day rate on request</span>
+          <span>@MarvelCollin</span>
+          <span>@marvelcolin_</span>
         </div>
         <div className="contact-actions">
-          <a className="btn primary" href="mailto:hello@marvel.dev">Send email →</a>
-          <a className="btn" href="#">Download CV ↓</a>
-          <a className="btn" href="#">Book 20 min →</a>
+          <a className="btn primary" href="mailto:marvelcollin7@gmail.com">Send email →</a>
+          <a className="btn" href="https://github.com/MarvelCollin" target="_blank" rel="noreferrer">GitHub →</a>
+          <a className="btn" href="https://www.linkedin.com/in/marvel-collin-0244a21ba/" target="_blank" rel="noreferrer">LinkedIn →</a>
         </div>
       </section>
     </div>

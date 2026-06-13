@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ClipboardEvent, DragEvent, ChangeEvent } from 'react';
 import { useContent } from '../content/store';
 import { isAuthed, login, logout } from '../lib/auth';
 import { TONE_NAMES } from '../content/tones';
+import { uploadImage } from '../lib/storage';
 import * as api from '../lib/api';
 import type { Project } from '../types';
 
@@ -37,6 +38,111 @@ function SelectField({ label, value, onChange, options }: { label: string; value
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </label>
+  );
+}
+
+function filesFromClipboard(e: ClipboardEvent<HTMLDivElement>): File[] {
+  return Array.from(e.clipboardData.items)
+    .filter((i) => i.type.startsWith('image/'))
+    .map((i) => i.getAsFile())
+    .filter((f): f is File => f !== null);
+}
+
+function ImageDrop({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const upload = async (file: File) => {
+    setBusy(true); setErr('');
+    try { onChange(await uploadImage(file)); }
+    catch (x) { setErr(x instanceof Error ? x.message : 'Upload failed'); }
+    finally { setBusy(false); }
+  };
+
+  const onPaste = (e: ClipboardEvent<HTMLDivElement>) => {
+    const files = filesFromClipboard(e);
+    if (files.length) { e.preventDefault(); upload(files[0]); }
+  };
+  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files?.[0];
+    if (f) upload(f);
+  };
+  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) upload(f);
+  };
+
+  return (
+    <div className="fld">
+      <span>{label}{busy && <em> uploading…</em>}</span>
+      <div className="img-drop" tabIndex={0} onPaste={onPaste} onDrop={onDrop} onDragOver={(e) => e.preventDefault()}>
+        {value
+          ? <img src={value} alt="" className="img-prev" />
+          : <span className="img-hint">Click, then paste · or drop · or browse</span>}
+        <input type="file" accept="image/*" onChange={onFile} />
+      </div>
+      <div className="img-row">
+        {value && <button type="button" className="img-clear" onClick={() => onChange('')}>Remove</button>}
+        {err && <span className="adm-err">{err}</span>}
+      </div>
+    </div>
+  );
+}
+
+function MultiImageDrop({ label, value, onChange }: { label: string; value: string[]; onChange: (v: string[]) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const addFiles = async (files: File[]) => {
+    setBusy(true); setErr('');
+    try {
+      let next = value;
+      for (const f of files) {
+        if (!f.type.startsWith('image/')) continue;
+        const url = await uploadImage(f);
+        next = [...next, url];
+        onChange(next);
+      }
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Upload failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onPaste = (e: ClipboardEvent<HTMLDivElement>) => {
+    const files = filesFromClipboard(e);
+    if (files.length) { e.preventDefault(); addFiles(files); }
+  };
+  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files?.length) addFiles(Array.from(e.dataTransfer.files));
+  };
+  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) addFiles(Array.from(e.target.files));
+  };
+  const remove = (i: number) => onChange(value.filter((_, j) => j !== i));
+
+  return (
+    <div className="fld">
+      <span>{label}{busy && <em> uploading…</em>}</span>
+      {value.length > 0 && (
+        <div className="img-grid">
+          {value.map((url, i) => (
+            <div className="img-cell" key={i}>
+              <img src={url} alt="" />
+              <button type="button" onClick={() => remove(i)}>×</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="img-drop" tabIndex={0} onPaste={onPaste} onDrop={onDrop} onDragOver={(e) => e.preventDefault()}>
+        <span className="img-hint">Click, then paste · or drop · or browse</span>
+        <input type="file" accept="image/*" multiple onChange={onFile} />
+      </div>
+      {err && <p className="adm-err">{err}</p>}
+    </div>
   );
 }
 
@@ -134,12 +240,10 @@ function WorksSection() {
         <TextField label="Brief" value={form.brief} onChange={set('brief')} />
         <AreaField label="Body" hint="(one paragraph per line)" value={form.body} onChange={set('body')} rows={5} />
         <TextField label="Result" value={form.result} onChange={set('result')} />
-        <div className="row2">
-          <SelectField label="Tone" value={form.tone} onChange={set('tone')} options={TONE_NAMES} />
-          <TextField label="Cover URL" value={form.cover} onChange={set('cover')} />
-        </div>
+        <SelectField label="Tone" value={form.tone} onChange={set('tone')} options={TONE_NAMES} />
+        <ImageDrop label="Cover" value={form.cover} onChange={set('cover')} />
         <AreaField label="Stills" hint="(one per line)" value={form.stills} onChange={set('stills')} />
-        <AreaField label="Image URLs" hint="(one per line)" value={form.images} onChange={set('images')} />
+        <MultiImageDrop label="Images" value={lines(form.images)} onChange={(arr) => set('images')(arr.join('\n'))} />
         {err && <p className="adm-err">{err}</p>}
         <div className="adm-actions">
           <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
@@ -165,8 +269,8 @@ function WorksSection() {
   );
 }
 
-interface SkillForm { name: string; years: string; opinion: string; sort: string; }
-const emptySkill: SkillForm = { name: '', years: '', opinion: '', sort: '0' };
+interface SkillForm { name: string; opinion: string; sort: string; }
+const emptySkill: SkillForm = { name: '', opinion: '', sort: '0' };
 
 function SkillsSection() {
   const { skills, refresh } = useContent();
@@ -181,7 +285,7 @@ function SkillsSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.SkillInput = { name: form.name.trim(), years: form.years.trim(), opinion: form.opinion.trim(), sort: Number(form.sort) || 0 };
+      const input: api.SkillInput = { name: form.name.trim(), opinion: form.opinion.trim(), sort: Number(form.sort) || 0 };
       if (editId) await api.updateSkill(editId, input);
       else await api.createSkill(input);
       await refresh();
@@ -213,10 +317,9 @@ function SkillsSection() {
         <h3>{editId ? 'Edit skill' : 'New skill'}</h3>
         <div className="row2">
           <TextField label="Name" value={form.name} onChange={set('name')} />
-          <TextField label="Years" value={form.years} onChange={set('years')} />
+          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
         </div>
         <AreaField label="Opinion" value={form.opinion} onChange={set('opinion')} />
-        <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
         {err && <p className="adm-err">{err}</p>}
         <div className="adm-actions">
           <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
@@ -228,11 +331,11 @@ function SkillsSection() {
         {skills.map((s) => (
           <div className="adm-item" key={s.id}>
             <div>
-              <div className="t">{s.name} <span className="s">{s.years}</span></div>
+              <div className="t">{s.name}</div>
               <div className="s">{s.opinion}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ name: s.name, years: s.years, opinion: s.opinion, sort: String(s.sort) }); setEditId(s.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ name: s.name, opinion: s.opinion, sort: String(s.sort) }); setEditId(s.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(s.id)}>Delete</button>
             </div>
           </div>

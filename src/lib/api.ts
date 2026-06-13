@@ -29,7 +29,6 @@ interface WorkRow {
 interface SkillRow {
   id: string;
   name: string;
-  years: string;
   opinion: string;
   sort: number;
 }

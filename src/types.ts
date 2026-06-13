@@ -27,7 +27,6 @@ export interface Tone {
 export interface Skill {
   id: string;
   name: string;
-  years: string;
   opinion: string;
   sort: number;
 }

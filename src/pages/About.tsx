@@ -7,35 +7,34 @@ export function About() {
       <section className="page">
         <div className="about-bio">
           <p className="about-lede">
-            Full-stack developer, seven years in. I build web applications and care about the details that make them feel right.
+            Computer Science student at BINUS University and a full-stack engineer. I build web applications and care about the details that make them feel right.
           </p>
           <p className="about-body">
-            I work across the stack from Postgres to React. Most of my time goes to TypeScript, but I reach for Rust or Go when performance matters. I've shipped CMS platforms, realtime collaboration engines, data dashboards, and a few tools nobody asked for.
+            I work across the stack — TypeScript and React on the front, Go, .NET Core, and PHP on the back, with microservices and RabbitMQ in production on the BINUS laboratory platform. On the side I build games with Three.js, ML experiments in Python, and award-winning robotics.
           </p>
           <p className="about-body">
-            Based in Jakarta. Open to contract work and collaborations.
+            Based in Jakarta. Open to collaborations and interesting projects.
           </p>
         </div>
         <div className="about-strip">
           <div>
             <span className="about-k">Now</span>
-            <span>Founding engineer, stealth devtools.</span>
+            <span>Full-stack engineer, BINUS R&D.</span>
           </div>
           <div>
             <span className="about-k">Based</span>
             <span>Jakarta, Indonesia · GMT+7</span>
           </div>
           <div>
-            <span className="about-k">Available</span>
-            <span>Q3 to Q4 2026</span>
+            <span className="about-k">Studying</span>
+            <span>Computer Science, BINUS University</span>
           </div>
           <div>
             <span className="about-k">Elsewhere</span>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href="#">github</a>
-              <a href="#">read.cv</a>
-              <a href="#">are.na</a>
-              <a href="#">twitter</a>
+              <a href="https://github.com/MarvelCollin" target="_blank" rel="noreferrer">github</a>
+              <a href="https://www.linkedin.com/in/marvel-collin-0244a21ba/" target="_blank" rel="noreferrer">linkedin</a>
+              <a href="https://www.instagram.com/marvelcolin_/" target="_blank" rel="noreferrer">instagram</a>
             </div>
           </div>
         </div>
@@ -47,7 +46,7 @@ export function About() {
           <div className="skills-list">
             {SKILLS.map((s, i) => (
               <div className="skill" key={i}>
-                <div className="name">{s.name} <span style={{ fontSize: 11, color: 'var(--muted)', fontFamily: 'ui-monospace,monospace', marginLeft: 6 }}>{s.years}</span></div>
+                <div className="name">{s.name}</div>
                 <div className="opinion">{s.opinion}</div>
               </div>
             ))}
@@ -72,8 +71,8 @@ export function About() {
         </div>
         <div className="about-section">
           <div className="sec-label">
-            <span className="l">Recognition</span>
-            <span className="r">2020 to 2024</span>
+            <span className="l">Licenses & Awards</span>
+            <span className="r">2022 to 2025</span>
           </div>
           <div className="awards">
             {AWARDS.map((a, i) => (
