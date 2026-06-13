@@ -1,5 +1,5 @@
 import type { Project } from '../types';
-import { TONES } from '../content/projects';
+import { TONES } from '../content/tones';
 
 export function Thumbnail({ p }: { p: Project }) {
   const tone = TONES[p.tone] || TONES['warm'];

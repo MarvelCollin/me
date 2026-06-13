@@ -1,10 +1,4 @@
-import type { Project, Tone } from '../../types';
-
-const mods = import.meta.glob<{ default: Project }>('./*/index.ts', { eager: true });
-
-export const PROJECTS: Project[] = Object.values(mods)
-  .map(m => m.default)
-  .sort((a, b) => a.num.localeCompare(b.num));
+import type { Tone } from '../types';
 
 export const TONES: Record<string, Tone> = {
   warm:       { glow: 'rgba(212,178,72,.55)',  tint: 'rgba(212,178,72,.18)',  pos: '68% 38%' },
@@ -19,10 +13,4 @@ export const TONES: Record<string, Tone> = {
   plum:       { glow: 'rgba(140,98,128,.42)',  tint: 'rgba(140,98,128,.18)',  pos: '45% 35%' },
 };
 
-export function projectBySlug(slug: string): Project | undefined {
-  return PROJECTS.find(p => p.slug === slug);
-}
-
-export function projectIndex(slug: string): number {
-  return PROJECTS.findIndex(p => p.slug === slug);
-}
+export const TONE_NAMES = Object.keys(TONES);

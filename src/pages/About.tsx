@@ -1,6 +1,7 @@
-import { SKILLS, HISTORY, AWARDS } from '../content/about';
+import { useContent } from '../content/store';
 
 export function About() {
+  const { skills: SKILLS, experience: HISTORY, recognition: AWARDS } = useContent();
   return (
     <div data-screen-label="About">
       <section className="page">

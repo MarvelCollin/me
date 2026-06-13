@@ -1,0 +1,479 @@
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
+import { useContent } from '../content/store';
+import { isAuthed, login, logout } from '../lib/auth';
+import { TONE_NAMES } from '../content/tones';
+import * as api from '../lib/api';
+import type { Project } from '../types';
+
+type Tab = 'works' | 'skills' | 'experience' | 'recognition';
+
+const lines = (v: string): string[] => v.split('\n').map((s) => s.trim()).filter(Boolean);
+const unlines = (v: string[]): string => v.join('\n');
+
+function TextField({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
+  return (
+    <label className="fld">
+      <span>{label}</span>
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} />
+    </label>
+  );
+}
+
+function AreaField({ label, value, onChange, rows = 3, hint }: { label: string; value: string; onChange: (v: string) => void; rows?: number; hint?: string }) {
+  return (
+    <label className="fld">
+      <span>{label}{hint && <em> {hint}</em>}</span>
+      <textarea rows={rows} value={value} onChange={(e) => onChange(e.target.value)} />
+    </label>
+  );
+}
+
+function SelectField({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+  return (
+    <label className="fld">
+      <span>{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </label>
+  );
+}
+
+interface WorkForm {
+  slug: string; num: string; name: string; year: string; role: string; stack: string;
+  client: string; tag: string; desc: string; brief: string; body: string; result: string;
+  tone: string; stills: string; cover: string; images: string;
+}
+
+const emptyWork: WorkForm = {
+  slug: '', num: '', name: '', year: '', role: '', stack: '', client: '', tag: 'client',
+  desc: '', brief: '', body: '', result: '', tone: 'warm', stills: '', cover: '', images: '',
+};
+
+function workToForm(p: Project): WorkForm {
+  return {
+    slug: p.slug, num: p.num, name: p.name, year: p.year, role: p.role, stack: p.stack,
+    client: p.client, tag: p.tag, desc: p.desc, brief: p.brief, body: unlines(p.body),
+    result: p.result, tone: p.tone, stills: unlines(p.stills), cover: p.cover ?? '',
+    images: unlines(p.images ?? []),
+  };
+}
+
+function formToWork(f: WorkForm): api.WorkInput {
+  return {
+    slug: f.slug.trim(), num: f.num.trim(), name: f.name.trim(), year: f.year.trim(),
+    role: f.role.trim(), stack: f.stack.trim(), client: f.client.trim(), tag: f.tag,
+    desc: f.desc.trim(), brief: f.brief.trim(), body: lines(f.body), result: f.result.trim(),
+    tone: f.tone, stills: lines(f.stills), cover: f.cover.trim() || undefined,
+    images: lines(f.images),
+  };
+}
+
+function WorksSection() {
+  const { works, refresh } = useContent();
+  const [form, setForm] = useState<WorkForm>(emptyWork);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const set = (k: keyof WorkForm) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const reset = () => { setForm(emptyWork); setEditId(null); setErr(''); };
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try {
+      const input = formToWork(form);
+      if (editId) await api.updateWork(editId, input);
+      else await api.createWork(input);
+      await refresh();
+      reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('Delete this project?')) return;
+    setBusy(true); setErr('');
+    try {
+      await api.deleteWork(id);
+      await refresh();
+      if (editId === id) reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Delete failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="adm-grid">
+      <form className="adm-form" onSubmit={save}>
+        <h3>{editId ? 'Edit work' : 'New work'}</h3>
+        <div className="row2">
+          <TextField label="Slug" value={form.slug} onChange={set('slug')} />
+          <TextField label="Num" value={form.num} onChange={set('num')} />
+        </div>
+        <div className="row2">
+          <TextField label="Name" value={form.name} onChange={set('name')} />
+          <TextField label="Year" value={form.year} onChange={set('year')} />
+        </div>
+        <div className="row2">
+          <TextField label="Role" value={form.role} onChange={set('role')} />
+          <TextField label="Stack" value={form.stack} onChange={set('stack')} />
+        </div>
+        <div className="row2">
+          <TextField label="Client" value={form.client} onChange={set('client')} />
+          <SelectField label="Tag" value={form.tag} onChange={set('tag')} options={['client', 'product', 'personal']} />
+        </div>
+        <TextField label="Desc" value={form.desc} onChange={set('desc')} />
+        <TextField label="Brief" value={form.brief} onChange={set('brief')} />
+        <AreaField label="Body" hint="(one paragraph per line)" value={form.body} onChange={set('body')} rows={5} />
+        <TextField label="Result" value={form.result} onChange={set('result')} />
+        <div className="row2">
+          <SelectField label="Tone" value={form.tone} onChange={set('tone')} options={TONE_NAMES} />
+          <TextField label="Cover URL" value={form.cover} onChange={set('cover')} />
+        </div>
+        <AreaField label="Stills" hint="(one per line)" value={form.stills} onChange={set('stills')} />
+        <AreaField label="Image URLs" hint="(one per line)" value={form.images} onChange={set('images')} />
+        {err && <p className="adm-err">{err}</p>}
+        <div className="adm-actions">
+          <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
+          {editId && <button type="button" className="adm-btn" onClick={reset} disabled={busy}>Cancel</button>}
+        </div>
+      </form>
+      <div className="adm-list">
+        <h3>Works ({works.length})</h3>
+        {works.map((p) => (
+          <div className="adm-item" key={p.id}>
+            <div>
+              <div className="t">{p.num} · {p.name}</div>
+              <div className="s">{p.tag} · {p.year}</div>
+            </div>
+            <div className="adm-item-actions">
+              <button onClick={() => { setForm(workToForm(p)); setEditId(p.id); setErr(''); }}>Edit</button>
+              <button className="danger" onClick={() => remove(p.id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface SkillForm { name: string; years: string; opinion: string; sort: string; }
+const emptySkill: SkillForm = { name: '', years: '', opinion: '', sort: '0' };
+
+function SkillsSection() {
+  const { skills, refresh } = useContent();
+  const [form, setForm] = useState<SkillForm>(emptySkill);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const set = (k: keyof SkillForm) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const reset = () => { setForm(emptySkill); setEditId(null); setErr(''); };
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try {
+      const input: api.SkillInput = { name: form.name.trim(), years: form.years.trim(), opinion: form.opinion.trim(), sort: Number(form.sort) || 0 };
+      if (editId) await api.updateSkill(editId, input);
+      else await api.createSkill(input);
+      await refresh();
+      reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('Delete this skill?')) return;
+    setBusy(true); setErr('');
+    try {
+      await api.deleteSkill(id);
+      await refresh();
+      if (editId === id) reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Delete failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="adm-grid">
+      <form className="adm-form" onSubmit={save}>
+        <h3>{editId ? 'Edit skill' : 'New skill'}</h3>
+        <div className="row2">
+          <TextField label="Name" value={form.name} onChange={set('name')} />
+          <TextField label="Years" value={form.years} onChange={set('years')} />
+        </div>
+        <AreaField label="Opinion" value={form.opinion} onChange={set('opinion')} />
+        <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
+        {err && <p className="adm-err">{err}</p>}
+        <div className="adm-actions">
+          <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
+          {editId && <button type="button" className="adm-btn" onClick={reset} disabled={busy}>Cancel</button>}
+        </div>
+      </form>
+      <div className="adm-list">
+        <h3>Skills ({skills.length})</h3>
+        {skills.map((s) => (
+          <div className="adm-item" key={s.id}>
+            <div>
+              <div className="t">{s.name} <span className="s">{s.years}</span></div>
+              <div className="s">{s.opinion}</div>
+            </div>
+            <div className="adm-item-actions">
+              <button onClick={() => { setForm({ name: s.name, years: s.years, opinion: s.opinion, sort: String(s.sort) }); setEditId(s.id); setErr(''); }}>Edit</button>
+              <button className="danger" onClick={() => remove(s.id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface ExpForm { yr: string; role: string; where: string; note: string; sort: string; }
+const emptyExp: ExpForm = { yr: '', role: '', where: '', note: '', sort: '0' };
+
+function ExperienceSection() {
+  const { experience, refresh } = useContent();
+  const [form, setForm] = useState<ExpForm>(emptyExp);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const set = (k: keyof ExpForm) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const reset = () => { setForm(emptyExp); setEditId(null); setErr(''); };
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try {
+      const input: api.ExperienceInput = { yr: form.yr.trim(), role: form.role.trim(), where: form.where.trim(), note: form.note.trim(), sort: Number(form.sort) || 0 };
+      if (editId) await api.updateExperience(editId, input);
+      else await api.createExperience(input);
+      await refresh();
+      reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('Delete this experience?')) return;
+    setBusy(true); setErr('');
+    try {
+      await api.deleteExperience(id);
+      await refresh();
+      if (editId === id) reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Delete failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="adm-grid">
+      <form className="adm-form" onSubmit={save}>
+        <h3>{editId ? 'Edit experience' : 'New experience'}</h3>
+        <div className="row2">
+          <TextField label="Year" value={form.yr} onChange={set('yr')} />
+          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
+        </div>
+        <TextField label="Role" value={form.role} onChange={set('role')} />
+        <TextField label="Where" value={form.where} onChange={set('where')} />
+        <AreaField label="Note" value={form.note} onChange={set('note')} />
+        {err && <p className="adm-err">{err}</p>}
+        <div className="adm-actions">
+          <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
+          {editId && <button type="button" className="adm-btn" onClick={reset} disabled={busy}>Cancel</button>}
+        </div>
+      </form>
+      <div className="adm-list">
+        <h3>Experience ({experience.length})</h3>
+        {experience.map((j) => (
+          <div className="adm-item" key={j.id}>
+            <div>
+              <div className="t">{j.role} <span className="s">at {j.where}</span></div>
+              <div className="s">{j.yr}</div>
+            </div>
+            <div className="adm-item-actions">
+              <button onClick={() => { setForm({ yr: j.yr, role: j.role, where: j.where, note: j.note, sort: String(j.sort) }); setEditId(j.id); setErr(''); }}>Edit</button>
+              <button className="danger" onClick={() => remove(j.id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface AwardForm { yr: string; name: string; where: string; sort: string; }
+const emptyAward: AwardForm = { yr: '', name: '', where: '', sort: '0' };
+
+function RecognitionSection() {
+  const { recognition, refresh } = useContent();
+  const [form, setForm] = useState<AwardForm>(emptyAward);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const set = (k: keyof AwardForm) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const reset = () => { setForm(emptyAward); setEditId(null); setErr(''); };
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try {
+      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), sort: Number(form.sort) || 0 };
+      if (editId) await api.updateRecognition(editId, input);
+      else await api.createRecognition(input);
+      await refresh();
+      reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('Delete this recognition?')) return;
+    setBusy(true); setErr('');
+    try {
+      await api.deleteRecognition(id);
+      await refresh();
+      if (editId === id) reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Delete failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="adm-grid">
+      <form className="adm-form" onSubmit={save}>
+        <h3>{editId ? 'Edit recognition' : 'New recognition'}</h3>
+        <div className="row2">
+          <TextField label="Year" value={form.yr} onChange={set('yr')} />
+          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
+        </div>
+        <TextField label="Name" value={form.name} onChange={set('name')} />
+        <TextField label="Where" value={form.where} onChange={set('where')} />
+        {err && <p className="adm-err">{err}</p>}
+        <div className="adm-actions">
+          <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
+          {editId && <button type="button" className="adm-btn" onClick={reset} disabled={busy}>Cancel</button>}
+        </div>
+      </form>
+      <div className="adm-list">
+        <h3>Recognition ({recognition.length})</h3>
+        {recognition.map((a) => (
+          <div className="adm-item" key={a.id}>
+            <div>
+              <div className="t">{a.name}</div>
+              <div className="s">{a.yr} · {a.where}</div>
+            </div>
+            <div className="adm-item-actions">
+              <button onClick={() => { setForm({ yr: a.yr, name: a.name, where: a.where, sort: String(a.sort) }); setEditId(a.id); setErr(''); }}>Edit</button>
+              <button className="danger" onClick={() => remove(a.id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Gate({ onPass }: { onPass: () => void }) {
+  const [pw, setPw] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    const ok = await login(pw);
+    setBusy(false);
+    if (ok) onPass();
+    else { setErr('Incorrect password.'); setPw(''); }
+  };
+
+  return (
+    <div className="adm-gate">
+      <form onSubmit={submit}>
+        <h1>Admin</h1>
+        <p className="note">Enter the admin password to continue.</p>
+        <input
+          type="password"
+          autoComplete="current-password"
+          value={pw}
+          onChange={(e) => setPw(e.target.value)}
+          placeholder="Password"
+          autoFocus
+        />
+        {err && <p className="adm-err">{err}</p>}
+        <button type="submit" className="adm-btn primary" disabled={busy || !pw}>{busy ? 'Checking…' : 'Unlock'}</button>
+      </form>
+    </div>
+  );
+}
+
+function Panel({ onLogout }: { onLogout: () => void }) {
+  const { loading, error } = useContent();
+  const [tab, setTab] = useState<Tab>('works');
+  const tabs: { k: Tab; label: string }[] = [
+    { k: 'works', label: 'Works' },
+    { k: 'skills', label: 'Skills' },
+    { k: 'experience', label: 'Experience' },
+    { k: 'recognition', label: 'Recognition' },
+  ];
+
+  return (
+    <div>
+      <div className="adm-head">
+        <h1>Admin</h1>
+        <button className="adm-btn" onClick={onLogout}>Log out</button>
+      </div>
+      <div className="adm-tabs">
+        {tabs.map((t) => (
+          <button key={t.k} className={tab === t.k ? 'on' : ''} onClick={() => setTab(t.k)}>{t.label}</button>
+        ))}
+      </div>
+      {error && <p className="adm-err">{error}</p>}
+      {loading && <p className="note">Loading…</p>}
+      {tab === 'works' && <WorksSection />}
+      {tab === 'skills' && <SkillsSection />}
+      {tab === 'experience' && <ExperienceSection />}
+      {tab === 'recognition' && <RecognitionSection />}
+    </div>
+  );
+}
+
+export function Admin() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
+
+  useEffect(() => { isAuthed().then(setAuthed); }, []);
+
+  return (
+    <div data-screen-label="Admin">
+      <section className="page admin">
+        {authed === null && <p className="note">…</p>}
+        {authed === false && <Gate onPass={() => setAuthed(true)} />}
+        {authed === true && <Panel onLogout={() => { logout(); setAuthed(false); }} />}
+      </section>
+    </div>
+  );
+}

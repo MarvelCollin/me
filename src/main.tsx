@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
+import { ContentProvider } from './content/store.tsx';
 
 function initClock() {
   const el = document.getElementById('clock');
@@ -16,7 +17,9 @@ function initClock() {
 
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
-    <App />
+    <ContentProvider>
+      <App />
+    </ContentProvider>
   </StrictMode>,
 );
 

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { PROJECTS } from '../content/projects';
+import { useContent } from '../content/store';
 import { Thumbnail } from '../components/Thumbnail';
 
 export function Work() {
+  const { works: PROJECTS, loading } = useContent();
   const [filter, setFilter] = useState('all');
   const spreadRefs = useRef<(HTMLDivElement | null)[]>([]);
   const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.tag === filter);
@@ -38,6 +39,7 @@ export function Work() {
         </div>
 
         <div className="work-spread">
+          {loading && PROJECTS.length === 0 && <p className="note">Loading projects…</p>}
           {filtered.map((p, i) => {
             const v = layouts[PROJECTS.indexOf(p) % layouts.length] || 'v-a';
             return (

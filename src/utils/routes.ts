@@ -5,6 +5,7 @@ export function parseRoute(r: string): ParsedRoute {
   if (r === '/work') return { kind: 'work' };
   if (r === '/about') return { kind: 'about' };
   if (r === '/contact') return { kind: 'contact' };
+  if (r === '/admin') return { kind: 'admin' };
   return { kind: 'home' };
 }
 

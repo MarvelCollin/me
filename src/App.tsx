@@ -6,6 +6,7 @@ import { Work } from './pages/Work';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
+import { Admin } from './pages/Admin';
 
 function App() {
   const route = useRoute();
@@ -37,6 +38,7 @@ function App() {
   if (parsed.kind === 'work') return <Work />;
   if (parsed.kind === 'about') return <About />;
   if (parsed.kind === 'contact') return <Contact />;
+  if (parsed.kind === 'admin') return <Admin />;
   return <Home />;
 }
 

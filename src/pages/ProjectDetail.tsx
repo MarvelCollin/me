@@ -1,9 +1,19 @@
-import { PROJECTS, projectBySlug, projectIndex } from '../content/projects';
+import { useContent, findWork, workIndex } from '../content/store';
 import { Thumbnail } from '../components/Thumbnail';
 
 export function ProjectDetail({ slug }: { slug: string }) {
-  const p = projectBySlug(slug);
+  const { works: PROJECTS, loading } = useContent();
+  const p = findWork(PROJECTS, slug);
   if (!p) {
+    if (loading) {
+      return (
+        <div data-screen-label="Project">
+          <section className="page">
+            <p className="note">Loading…</p>
+          </section>
+        </div>
+      );
+    }
     return (
       <div data-screen-label="Project · 404">
         <section className="page">
@@ -15,7 +25,7 @@ export function ProjectDetail({ slug }: { slug: string }) {
     );
   }
 
-  const idx = projectIndex(slug);
+  const idx = workIndex(PROJECTS, slug);
   const prev = idx > 0 ? PROJECTS[idx - 1] : null;
   const next = idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
   const sections = [
