@@ -6,13 +6,13 @@ export function About() {
       <section className="page">
         <div className="about-bio">
           <p className="about-lede">
-            I'm Marvel, a full-stack developer who spends too long on the typography. Seven years in, ten projects deep, still in love with the part where a button finally feels right.
+            Full-stack developer, seven years in. I build web applications and care about the details that make them feel right.
           </p>
           <p className="about-body">
-            I work across the stack, interface to index. I prefer projects where I can touch the database and the kerning in the same week, and I take typography about as seriously as performance. Outside the editor: bad coffee, good light, a worrying number of bookmarks.
+            I work across the stack from Postgres to React. Most of my time goes to TypeScript, but I reach for Rust or Go when performance matters. I've shipped CMS platforms, realtime collaboration engines, data dashboards, and a few tools nobody asked for.
           </p>
           <p className="about-body">
-            I write occasionally, ship monthly, and answer email within a working day.
+            Based in Jakarta. Open to contract work and collaborations.
           </p>
         </div>
         <div className="about-strip">
@@ -54,7 +54,7 @@ export function About() {
         </div>
         <div className="about-section">
           <div className="sec-label">
-            <span className="l">A short history</span>
+            <span className="l">Experience</span>
             <span className="r">2019 to present</span>
           </div>
           <div className="history">

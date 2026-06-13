@@ -1,23 +1,23 @@
 import type { Skill, HistoryItem, Award } from '../types';
 
 export const SKILLS: Skill[] = [
-  { name: 'TypeScript',      years: '7y', opinion: 'Strict mode, satisfies, the works. I write more types than code.' },
-  { name: 'React',           years: '7y', opinion: 'Shipped 12+ React apps. Server components are fine, actually.' },
-  { name: 'Next.js',         years: '5y', opinion: 'App router is fine, actually. Edge runtime when it helps.' },
-  { name: 'Node / Bun',      years: '6y', opinion: 'Bun for dev. Node for prod, until it isn\'t.' },
-  { name: 'Postgres',        years: '6y', opinion: 'Joins are a love language. Full-text search beats every vendor.' },
-  { name: 'Rust',            years: '3y', opinion: 'For the times JavaScript gives up. Tauri changed my life.' },
-  { name: 'Go',              years: '4y', opinion: 'Backends that hum at 4am. Concurrency without the dread.' },
-  { name: 'Three.js / GLSL', years: '4y', opinion: 'Pixels with intent, math with patience. Mostly patience.' },
-  { name: 'Figma',           years: '5y', opinion: 'Where the mess gets organized. The hands-on design surface I trust.' },
-  { name: 'Tailwind',        years: '4y', opinion: 'Yes. I\'ll fight you. Composes faster than your CSS-in-JS.' },
+  { name: 'TypeScript',      years: '7y', opinion: 'Strict mode everywhere. Most of my work is in TS.' },
+  { name: 'React',           years: '7y', opinion: '12+ production apps. Comfortable with server components.' },
+  { name: 'Next.js',         years: '5y', opinion: 'App router, edge runtime, ISR. Production experience across all of it.' },
+  { name: 'Node / Bun',      years: '6y', opinion: 'Node for production, Bun for local dev and scripting.' },
+  { name: 'Postgres',        years: '6y', opinion: 'Schema design, full-text search, query optimization.' },
+  { name: 'Rust',            years: '3y', opinion: 'Used for performance-critical backends and Tauri desktop apps.' },
+  { name: 'Go',              years: '4y', opinion: 'Backend services, CLI tools, anything that needs to run reliably.' },
+  { name: 'Three.js / GLSL', years: '4y', opinion: 'WebGL data visualization and interactive 3D interfaces.' },
+  { name: 'Figma',           years: '5y', opinion: 'Design my own interfaces. Comfortable going from wireframe to code.' },
+  { name: 'Tailwind',        years: '4y', opinion: 'Primary styling approach for new projects.' },
 ];
 
 export const HISTORY: HistoryItem[] = [
-  { yr: '2024 to present', role: 'Founding engineer', where: 'Stealth devtools',            note: 'Devtools for design-first teams. Editor surface, CRDT, the whole stack, including the typography.' },
-  { yr: '2022 to 2024',   role: 'Senior full-stack',  where: 'Northcoast Studio · Jakarta', note: 'Shipped 14 client builds. Most were not Awwwards-bait, most were boring CMS work that paid the rent. A few weren\'t.' },
-  { yr: '2020 to 2022',   role: 'Product engineer',   where: 'Vermillion Labs',             note: 'CMS surface, editor, the parts that ship to users every day.' },
-  { yr: '2019 to 2020',   role: 'Frontend developer', where: 'Folio Co.',                  note: 'First job. Late nights I now regret. Learned what \'over-engineered\' means firsthand.' },
+  { yr: '2024 to present', role: 'Founding engineer', where: 'Stealth devtools',            note: 'Building a design-first developer tool. Editor surface, CRDT sync, full-stack ownership.' },
+  { yr: '2022 to 2024',   role: 'Senior full-stack',  where: 'Northcoast Studio · Jakarta', note: 'Shipped 14 client projects. Mix of marketing sites, CMS builds, and product prototypes.' },
+  { yr: '2020 to 2022',   role: 'Product engineer',   where: 'Vermillion Labs',             note: 'Built the CMS editor surface and publish pipeline. Company was acquired in 2024.' },
+  { yr: '2019 to 2020',   role: 'Frontend developer', where: 'Folio Co.',                  note: 'First role. Built writing tool interfaces in React and Tauri.' },
 ];
 
 export const AWARDS: Award[] = [

@@ -8,14 +8,14 @@ export function Home() {
       <section className="page">
         <div className="hero">
           <h1>
-            Marvel Collin, <span className="dim">a full-stack developer</span> who spends too long on the <span className="ac">typography</span>.
+            Marvel Collin, <span className="dim">full-stack developer</span> based in <span className="ac">Jakarta</span>.
           </h1>
           <div className="hero-meta">
-            <p>I work across the stack, interface to index, and prefer projects where I can touch <b>the database and the kerning</b> in the same week. Currently a founding engineer at a stealth devtools company. Open to commissions: studios, founders, editors.</p>
+            <p>I build web applications from database to interface. Seven years of shipping products, mostly in TypeScript and React, with detours into Rust and Go when the problem calls for it. Currently a founding engineer at a devtools startup.</p>
             <div className="hero-meta-right">
               <p>Jakarta · GMT+7</p>
               <p>Available Q3 to Q4 2026</p>
-              <a className="link" href="#/contact">Write me →</a>
+              <a className="link" href="#/contact">Get in touch →</a>
             </div>
           </div>
         </div>
@@ -28,15 +28,15 @@ export function Home() {
         </div>
         <div className="case">
           <div className="top">
-            <h2>Helios, <span className="dim">in some depth.</span></h2>
+            <h2>Helios</h2>
             <p className="lede">
-              <b>Helios</b> is a residential solar dashboard for a rooftop co-op in Bandung. The brief: <i>make the numbers feel less like a bill</i>. We built an interface that wakes, peaks, and rests with the sun outside the window, and rendered the sun in WebGL because the marketing team asked for a logo and we gave them weather.
+              <b>Helios</b> is a solar dashboard for a rooftop co-op in Bandung. 142 households track their energy production through an interface that reflects the actual sun position, rendered in WebGL and tinted by live weather data.
             </p>
           </div>
-          <a className="case-shot" href="#/work/helios" style={{ display: 'block', cursor: 'none' }}>
+          <a className="case-shot" href="#/work/helios">
             <Thumbnail p={projectBySlug('helios')!} />
             <span className="label">Helios · v1.4 · production</span>
-            <span className="acc">Open the project →</span>
+            <span className="acc">View project →</span>
           </a>
           <div className="case-meta">
             <div className="c"><div className="k">Client</div><div className="v">Solar co-op, Bandung</div></div>
