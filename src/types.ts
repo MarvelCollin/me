@@ -16,6 +16,7 @@ export interface Project {
   stills: string[];
   cover?: string;
   images?: string[];
+  repo?: string;
 }
 
 export interface Tone {

@@ -186,12 +186,13 @@ function MultiImageDrop({ label, value, onChange }: { label: string; value: stri
 interface WorkForm {
   slug: string; num: string; name: string; year: string; role: string; stack: string;
   client: string; tag: string; desc: string; brief: string; body: string; result: string;
-  tone: string; stills: string; cover: string; images: string;
+  tone: string; stills: string; cover: string; images: string; repo: string;
 }
 
 const emptyWork: WorkForm = {
   slug: '', num: '', name: '', year: '', role: '', stack: '', client: '', tag: 'client',
   desc: '', brief: '', body: '', result: '', tone: 'warm', stills: '', cover: '', images: '',
+  repo: '',
 };
 
 function workToForm(p: Project): WorkForm {
@@ -199,7 +200,7 @@ function workToForm(p: Project): WorkForm {
     slug: p.slug, num: p.num, name: p.name, year: p.year, role: p.role, stack: p.stack,
     client: p.client, tag: p.tag, desc: p.desc, brief: p.brief, body: unlines(p.body),
     result: p.result, tone: p.tone, stills: unlines(p.stills), cover: p.cover ?? '',
-    images: unlines(p.images ?? []),
+    images: unlines(p.images ?? []), repo: p.repo ?? '',
   };
 }
 
@@ -209,7 +210,7 @@ function formToWork(f: WorkForm): api.WorkInput {
     role: f.role.trim(), stack: f.stack.trim(), client: f.client.trim(), tag: f.tag,
     desc: f.desc.trim(), brief: f.brief.trim(), body: lines(f.body), result: f.result.trim(),
     tone: f.tone, stills: lines(f.stills), cover: f.cover.trim() || undefined,
-    images: lines(f.images),
+    images: lines(f.images), repo: f.repo.trim() || undefined,
   };
 }
 
@@ -281,6 +282,7 @@ function WorksSection() {
         <AreaField label="Body" hint="(one paragraph per line)" value={form.body} onChange={set('body')} rows={5} />
         <TextField label="Result" value={form.result} onChange={set('result')} />
         <SelectField label="Tone" value={form.tone} onChange={set('tone')} options={TONE_NAMES} />
+        <TextField label="Repo link" value={form.repo} onChange={set('repo')} />
         <ImageDrop label="Cover" value={form.cover} onChange={set('cover')} />
         <AreaField label="Stills" hint="(one per line)" value={form.stills} onChange={set('stills')} />
         <MultiImageDrop label="Images" value={lines(form.images)} onChange={(arr) => set('images')(arr.join('\n'))} />
@@ -345,6 +347,7 @@ function SkillsSection() {
     try {
       await api.deleteSkill(id);
       await refresh();
+      toast('Skill deleted');
       if (editId === id) reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Delete failed');
@@ -389,6 +392,7 @@ const emptyExp: ExpForm = { yr: '', role: '', where: '', note: '' };
 
 function ExperienceSection() {
   const { experience, refresh } = useContent();
+  const toast = useToast();
   const [form, setForm] = useState<ExpForm>(emptyExp);
   const [editId, setEditId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -404,6 +408,7 @@ function ExperienceSection() {
       if (editId) await api.updateExperience(editId, input);
       else await api.createExperience(input);
       await refresh();
+      toast(editId ? 'Experience updated' : 'Experience created');
       reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Save failed');
@@ -418,6 +423,7 @@ function ExperienceSection() {
     try {
       await api.deleteExperience(id);
       await refresh();
+      toast('Experience deleted');
       if (editId === id) reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Delete failed');
@@ -464,6 +470,7 @@ const emptyAward: AwardForm = { yr: '', name: '', where: '', image: '' };
 
 function RecognitionSection() {
   const { recognition, refresh } = useContent();
+  const toast = useToast();
   const [form, setForm] = useState<AwardForm>(emptyAward);
   const [editId, setEditId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -479,6 +486,7 @@ function RecognitionSection() {
       if (editId) await api.updateRecognition(editId, input);
       else await api.createRecognition(input);
       await refresh();
+      toast(editId ? 'Recognition updated' : 'Recognition created');
       reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Save failed');
@@ -493,6 +501,7 @@ function RecognitionSection() {
     try {
       await api.deleteRecognition(id);
       await refresh();
+      toast('Recognition deleted');
       if (editId === id) reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Delete failed');
@@ -539,6 +548,7 @@ const emptyEdu: EduForm = { yr: '', degree: '', school: '', note: '' };
 
 function EducationSection() {
   const { education, refresh } = useContent();
+  const toast = useToast();
   const [form, setForm] = useState<EduForm>(emptyEdu);
   const [editId, setEditId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -554,6 +564,7 @@ function EducationSection() {
       if (editId) await api.updateEducation(editId, input);
       else await api.createEducation(input);
       await refresh();
+      toast(editId ? 'Education updated' : 'Education created');
       reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Save failed');
@@ -568,6 +579,7 @@ function EducationSection() {
     try {
       await api.deleteEducation(id);
       await refresh();
+      toast('Education deleted');
       if (editId === id) reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Delete failed');
@@ -655,7 +667,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <div>
+    <ToastHost>
       <div className="adm-head">
         <h1>Admin</h1>
         <button className="adm-btn" onClick={onLogout}>Log out</button>
@@ -672,7 +684,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
       {tab === 'experience' && <ExperienceSection />}
       {tab === 'education' && <EducationSection />}
       {tab === 'recognition' && <RecognitionSection />}
-    </div>
+    </ToastHost>
   );
 }
 

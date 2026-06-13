@@ -33,14 +33,8 @@ export function ProjectDetail({ slug }: { slug: string }) {
     { label: 'Context', body: p.body[0] },
   ].filter(a => a.body);
 
-  const galleryImages: string[] = [];
-  const galleryCaptions: string[] = [];
-  if (p.cover) { galleryImages.push(p.cover); galleryCaptions.push(p.name); }
-  (p.images ?? []).forEach((src, i) => {
-    if (galleryImages.includes(src)) return;
-    galleryImages.push(src);
-    galleryCaptions.push(p.stills[i] ?? '');
-  });
+  const galleryImages = (p.images ?? []).filter((src) => src && src !== p.cover);
+  const galleryCaptions = galleryImages.map((_, i) => p.stills[i] ?? '');
 
   return (
     <div data-screen-label={'Project · ' + p.name}>
@@ -54,6 +48,11 @@ export function ProjectDetail({ slug }: { slug: string }) {
             <span className="num">{p.num} · {p.year}</span>
             <h1>{p.name}</h1>
             <p className="tagline"><b>{p.brief}</b></p>
+            {p.repo && (
+              <div className="story-links">
+                <a className="story-link" href={p.repo} target="_blank" rel="noreferrer">Repository →</a>
+              </div>
+            )}
           </div>
         </div>
         <div className="story-meta">
@@ -73,17 +72,6 @@ export function ProjectDetail({ slug }: { slug: string }) {
             </div>
           </div>
         ))}
-        <div className="story-image">
-          <div className="image-bg">
-            <Thumbnail p={p} />
-          </div>
-          <div className="image-text">
-            <div className="top">{p.name} · {p.year}</div>
-            <div className="bottom">
-              <div className="caption">{p.name}</div>
-            </div>
-          </div>
-        </div>
         <Gallery images={galleryImages} captions={galleryCaptions} name={p.name} />
         <div className="story-next">
           <div className="grid">

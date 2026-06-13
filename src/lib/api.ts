@@ -25,6 +25,7 @@ interface WorkRow {
   stills: string[];
   cover: string | null;
   images: string[] | null;
+  repo: string | null;
 }
 
 interface SkillRow {
@@ -71,6 +72,7 @@ function rowToWork(r: WorkRow): Project {
     stills: r.stills ?? [],
     cover: r.cover ?? undefined,
     images: r.images ?? undefined,
+    repo: r.repo ?? undefined,
   };
 }
 
@@ -92,6 +94,7 @@ function workToRow(w: WorkInput) {
     stills: w.stills,
     cover: w.cover ?? null,
     images: w.images ?? null,
+    repo: w.repo ?? null,
   };
 }
 
