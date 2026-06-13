@@ -2,10 +2,10 @@ import { supabase, TABLES } from './supabase';
 import type { Project, Skill, HistoryItem, Award, Education } from '../types';
 
 export type WorkInput = Omit<Project, 'id'>;
-export type SkillInput = Omit<Skill, 'id'>;
-export type ExperienceInput = Omit<HistoryItem, 'id'>;
-export type RecognitionInput = Omit<Award, 'id'>;
-export type EducationInput = Omit<Education, 'id'>;
+export type SkillInput = Omit<Skill, 'id' | 'sort'>;
+export type ExperienceInput = Omit<HistoryItem, 'id' | 'sort'>;
+export type RecognitionInput = Omit<Award, 'id' | 'sort'>;
+export type EducationInput = Omit<Education, 'id' | 'sort'>;
 
 interface WorkRow {
   id: string;
@@ -100,7 +100,7 @@ function rowToExperience(r: ExperienceRow): HistoryItem {
 }
 
 function experienceToRow(e: ExperienceInput) {
-  return { yr: e.yr, role: e.role, place: e.where, note: e.note, sort: e.sort };
+  return { yr: e.yr, role: e.role, place: e.where, note: e.note };
 }
 
 function rowToRecognition(r: RecognitionRow): Award {
@@ -108,12 +108,18 @@ function rowToRecognition(r: RecognitionRow): Award {
 }
 
 function recognitionToRow(a: RecognitionInput) {
-  return { yr: a.yr, name: a.name, place: a.where, image: a.image ?? null, sort: a.sort };
+  return { yr: a.yr, name: a.name, place: a.where, image: a.image ?? null };
 }
 
 function guard<T>(data: T | null, error: { message: string } | null): T {
   if (error) throw new Error(error.message);
   return data as T;
+}
+
+async function nextSort(table: string): Promise<number> {
+  const { data } = await supabase.from(table).select('sort').order('sort', { ascending: false }).limit(1);
+  const top = (data as { sort: number }[] | null)?.[0]?.sort;
+  return typeof top === 'number' ? top + 1 : 0;
 }
 
 export async function fetchWorks(): Promise<Project[]> {
@@ -142,7 +148,8 @@ export async function fetchSkills(): Promise<Skill[]> {
 }
 
 export async function createSkill(input: SkillInput): Promise<void> {
-  const { error } = await supabase.from(TABLES.skills).insert(input);
+  const sort = await nextSort(TABLES.skills);
+  const { error } = await supabase.from(TABLES.skills).insert({ ...input, sort });
   if (error) throw new Error(error.message);
 }
 
@@ -162,7 +169,8 @@ export async function fetchExperience(): Promise<HistoryItem[]> {
 }
 
 export async function createExperience(input: ExperienceInput): Promise<void> {
-  const { error } = await supabase.from(TABLES.experience).insert(experienceToRow(input));
+  const sort = await nextSort(TABLES.experience);
+  const { error } = await supabase.from(TABLES.experience).insert({ ...experienceToRow(input), sort });
   if (error) throw new Error(error.message);
 }
 
@@ -182,7 +190,8 @@ export async function fetchRecognition(): Promise<Award[]> {
 }
 
 export async function createRecognition(input: RecognitionInput): Promise<void> {
-  const { error } = await supabase.from(TABLES.recognition).insert(recognitionToRow(input));
+  const sort = await nextSort(TABLES.recognition);
+  const { error } = await supabase.from(TABLES.recognition).insert({ ...recognitionToRow(input), sort });
   if (error) throw new Error(error.message);
 }
 
@@ -202,7 +211,8 @@ export async function fetchEducation(): Promise<Education[]> {
 }
 
 export async function createEducation(input: EducationInput): Promise<void> {
-  const { error } = await supabase.from(TABLES.education).insert(input);
+  const sort = await nextSort(TABLES.education);
+  const { error } = await supabase.from(TABLES.education).insert({ ...input, sort });
   if (error) throw new Error(error.message);
 }
 

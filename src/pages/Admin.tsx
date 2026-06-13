@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent, ClipboardEvent, DragEvent, ChangeEvent } from 'react';
 import { useContent } from '../content/store';
 import { isAuthed, login, logout } from '../lib/auth';
@@ -48,61 +48,26 @@ function filesFromClipboard(e: ClipboardEvent<HTMLDivElement>): File[] {
     .filter((f): f is File => f !== null);
 }
 
-function ImageDrop({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
+function UploadModal({ title, multiple, onClose, onAdd }: { title: string; multiple: boolean; onClose: () => void; onAdd: (url: string) => void }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const boxRef = useRef<HTMLDivElement>(null);
 
-  const upload = async (file: File) => {
-    setBusy(true); setErr('');
-    try { onChange(await uploadImage(file)); }
-    catch (x) { setErr(x instanceof Error ? x.message : 'Upload failed'); }
-    finally { setBusy(false); }
-  };
+  useEffect(() => { boxRef.current?.focus(); }, []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
-  const onPaste = (e: ClipboardEvent<HTMLDivElement>) => {
-    const files = filesFromClipboard(e);
-    if (files.length) { e.preventDefault(); upload(files[0]); }
-  };
-  const onDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const f = e.dataTransfer.files?.[0];
-    if (f) upload(f);
-  };
-  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (f) upload(f);
-  };
-
-  return (
-    <div className="fld">
-      <span>{label}{busy && <em> uploading…</em>}</span>
-      <div className="img-drop" tabIndex={0} onPaste={onPaste} onDrop={onDrop} onDragOver={(e) => e.preventDefault()}>
-        {value
-          ? <img src={value} alt="" className="img-prev" />
-          : <span className="img-hint">Click, then paste · or drop · or browse</span>}
-        <input type="file" accept="image/*" onChange={onFile} />
-      </div>
-      <div className="img-row">
-        {value && <button type="button" className="img-clear" onClick={() => onChange('')}>Remove</button>}
-        {err && <span className="adm-err">{err}</span>}
-      </div>
-    </div>
-  );
-}
-
-function MultiImageDrop({ label, value, onChange }: { label: string; value: string[]; onChange: (v: string[]) => void }) {
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState('');
-
-  const addFiles = async (files: File[]) => {
+  const upload = async (files: File[]) => {
     setBusy(true); setErr('');
     try {
-      let next = value;
       for (const f of files) {
         if (!f.type.startsWith('image/')) continue;
         const url = await uploadImage(f);
-        next = [...next, url];
-        onChange(next);
+        onAdd(url);
+        if (!multiple) { onClose(); return; }
       }
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Upload failed');
@@ -113,20 +78,74 @@ function MultiImageDrop({ label, value, onChange }: { label: string; value: stri
 
   const onPaste = (e: ClipboardEvent<HTMLDivElement>) => {
     const files = filesFromClipboard(e);
-    if (files.length) { e.preventDefault(); addFiles(files); }
+    if (files.length) { e.preventDefault(); upload(files); }
   };
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files?.length) addFiles(Array.from(e.dataTransfer.files));
+    if (e.dataTransfer.files?.length) upload(Array.from(e.dataTransfer.files));
   };
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) addFiles(Array.from(e.target.files));
+    if (e.target.files?.length) upload(Array.from(e.target.files));
   };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal"
+        ref={boxRef}
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+        onPaste={onPaste}
+        onDrop={onDrop}
+        onDragOver={(e) => e.preventDefault()}
+      >
+        <div className="modal-head">
+          <h3>{title}{busy && <em> uploading…</em>}</h3>
+          <button type="button" className="modal-x" onClick={onClose} aria-label="Close">×</button>
+        </div>
+        <label className="modal-drop">
+          <span>{busy ? 'Uploading…' : 'Paste a screenshot with Ctrl+V, drop a file here, or click to browse'}</span>
+          <input type="file" accept="image/*" multiple={multiple} onChange={onFile} />
+        </label>
+        {err && <p className="adm-err">{err}</p>}
+        {multiple && <p className="modal-hint">Add as many as you like, then close.</p>}
+      </div>
+    </div>
+  );
+}
+
+function ImageDrop({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="fld">
+      <span>{label}</span>
+      <button type="button" className="img-trigger" onClick={() => setOpen(true)}>
+        {value
+          ? <img src={value} alt="" className="img-prev" />
+          : <span className="img-hint">Click to add image</span>}
+      </button>
+      {value && (
+        <div className="img-row">
+          <button type="button" className="img-clear" onClick={() => onChange('')}>Remove</button>
+        </div>
+      )}
+      {open && <UploadModal title={label} multiple={false} onClose={() => setOpen(false)} onAdd={onChange} />}
+    </div>
+  );
+}
+
+function MultiImageDrop({ label, value, onChange }: { label: string; value: string[]; onChange: (v: string[]) => void }) {
+  const [open, setOpen] = useState(false);
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
+  const add = (url: string) => onChange([...valueRef.current, url]);
   const remove = (i: number) => onChange(value.filter((_, j) => j !== i));
 
   return (
     <div className="fld">
-      <span>{label}{busy && <em> uploading…</em>}</span>
+      <span>{label}</span>
       {value.length > 0 && (
         <div className="img-grid">
           {value.map((url, i) => (
@@ -137,11 +156,8 @@ function MultiImageDrop({ label, value, onChange }: { label: string; value: stri
           ))}
         </div>
       )}
-      <div className="img-drop" tabIndex={0} onPaste={onPaste} onDrop={onDrop} onDragOver={(e) => e.preventDefault()}>
-        <span className="img-hint">Click, then paste · or drop · or browse</span>
-        <input type="file" accept="image/*" multiple onChange={onFile} />
-      </div>
-      {err && <p className="adm-err">{err}</p>}
+      <button type="button" className="img-add" onClick={() => setOpen(true)}>+ Add images</button>
+      {open && <UploadModal title={label} multiple onClose={() => setOpen(false)} onAdd={add} />}
     </div>
   );
 }
@@ -269,8 +285,8 @@ function WorksSection() {
   );
 }
 
-interface SkillForm { name: string; opinion: string; sort: string; }
-const emptySkill: SkillForm = { name: '', opinion: '', sort: '0' };
+interface SkillForm { name: string; opinion: string; }
+const emptySkill: SkillForm = { name: '', opinion: '' };
 
 function SkillsSection() {
   const { skills, refresh } = useContent();
@@ -285,7 +301,7 @@ function SkillsSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.SkillInput = { name: form.name.trim(), opinion: form.opinion.trim(), sort: Number(form.sort) || 0 };
+      const input: api.SkillInput = { name: form.name.trim(), opinion: form.opinion.trim() };
       if (editId) await api.updateSkill(editId, input);
       else await api.createSkill(input);
       await refresh();
@@ -315,10 +331,7 @@ function SkillsSection() {
     <div className="adm-grid">
       <form className="adm-form" onSubmit={save}>
         <h3>{editId ? 'Edit skill' : 'New skill'}</h3>
-        <div className="row2">
-          <TextField label="Name" value={form.name} onChange={set('name')} />
-          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
-        </div>
+        <TextField label="Name" value={form.name} onChange={set('name')} />
         <AreaField label="Opinion" value={form.opinion} onChange={set('opinion')} />
         {err && <p className="adm-err">{err}</p>}
         <div className="adm-actions">
@@ -335,7 +348,7 @@ function SkillsSection() {
               <div className="s">{s.opinion}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ name: s.name, opinion: s.opinion, sort: String(s.sort) }); setEditId(s.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ name: s.name, opinion: s.opinion }); setEditId(s.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(s.id)}>Delete</button>
             </div>
           </div>
@@ -345,8 +358,8 @@ function SkillsSection() {
   );
 }
 
-interface ExpForm { yr: string; role: string; where: string; note: string; sort: string; }
-const emptyExp: ExpForm = { yr: '', role: '', where: '', note: '', sort: '0' };
+interface ExpForm { yr: string; role: string; where: string; note: string; }
+const emptyExp: ExpForm = { yr: '', role: '', where: '', note: '' };
 
 function ExperienceSection() {
   const { experience, refresh } = useContent();
@@ -361,7 +374,7 @@ function ExperienceSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.ExperienceInput = { yr: form.yr.trim(), role: form.role.trim(), where: form.where.trim(), note: form.note.trim(), sort: Number(form.sort) || 0 };
+      const input: api.ExperienceInput = { yr: form.yr.trim(), role: form.role.trim(), where: form.where.trim(), note: form.note.trim() };
       if (editId) await api.updateExperience(editId, input);
       else await api.createExperience(input);
       await refresh();
@@ -391,10 +404,7 @@ function ExperienceSection() {
     <div className="adm-grid">
       <form className="adm-form" onSubmit={save}>
         <h3>{editId ? 'Edit experience' : 'New experience'}</h3>
-        <div className="row2">
-          <TextField label="Year" value={form.yr} onChange={set('yr')} />
-          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
-        </div>
+        <TextField label="Year" value={form.yr} onChange={set('yr')} />
         <TextField label="Role" value={form.role} onChange={set('role')} />
         <TextField label="Where" value={form.where} onChange={set('where')} />
         <AreaField label="Note" value={form.note} onChange={set('note')} />
@@ -413,7 +423,7 @@ function ExperienceSection() {
               <div className="s">{j.yr}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ yr: j.yr, role: j.role, where: j.where, note: j.note, sort: String(j.sort) }); setEditId(j.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ yr: j.yr, role: j.role, where: j.where, note: j.note }); setEditId(j.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(j.id)}>Delete</button>
             </div>
           </div>
@@ -423,8 +433,8 @@ function ExperienceSection() {
   );
 }
 
-interface AwardForm { yr: string; name: string; where: string; image: string; sort: string; }
-const emptyAward: AwardForm = { yr: '', name: '', where: '', image: '', sort: '0' };
+interface AwardForm { yr: string; name: string; where: string; image: string; }
+const emptyAward: AwardForm = { yr: '', name: '', where: '', image: '' };
 
 function RecognitionSection() {
   const { recognition, refresh } = useContent();
@@ -439,7 +449,7 @@ function RecognitionSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), image: form.image.trim() || undefined, sort: Number(form.sort) || 0 };
+      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), image: form.image.trim() || undefined };
       if (editId) await api.updateRecognition(editId, input);
       else await api.createRecognition(input);
       await refresh();
@@ -469,10 +479,7 @@ function RecognitionSection() {
     <div className="adm-grid">
       <form className="adm-form" onSubmit={save}>
         <h3>{editId ? 'Edit recognition' : 'New recognition'}</h3>
-        <div className="row2">
-          <TextField label="Year" value={form.yr} onChange={set('yr')} />
-          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
-        </div>
+        <TextField label="Year" value={form.yr} onChange={set('yr')} />
         <TextField label="Name" value={form.name} onChange={set('name')} />
         <TextField label="Where" value={form.where} onChange={set('where')} />
         <ImageDrop label="Photo" value={form.image} onChange={set('image')} />
@@ -491,7 +498,7 @@ function RecognitionSection() {
               <div className="s">{a.yr} · {a.where}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ yr: a.yr, name: a.name, where: a.where, image: a.image ?? '', sort: String(a.sort) }); setEditId(a.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ yr: a.yr, name: a.name, where: a.where, image: a.image ?? '' }); setEditId(a.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(a.id)}>Delete</button>
             </div>
           </div>
@@ -501,8 +508,8 @@ function RecognitionSection() {
   );
 }
 
-interface EduForm { yr: string; degree: string; school: string; note: string; sort: string; }
-const emptyEdu: EduForm = { yr: '', degree: '', school: '', note: '', sort: '0' };
+interface EduForm { yr: string; degree: string; school: string; note: string; }
+const emptyEdu: EduForm = { yr: '', degree: '', school: '', note: '' };
 
 function EducationSection() {
   const { education, refresh } = useContent();
@@ -517,7 +524,7 @@ function EducationSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.EducationInput = { yr: form.yr.trim(), degree: form.degree.trim(), school: form.school.trim(), note: form.note.trim(), sort: Number(form.sort) || 0 };
+      const input: api.EducationInput = { yr: form.yr.trim(), degree: form.degree.trim(), school: form.school.trim(), note: form.note.trim() };
       if (editId) await api.updateEducation(editId, input);
       else await api.createEducation(input);
       await refresh();
@@ -547,10 +554,7 @@ function EducationSection() {
     <div className="adm-grid">
       <form className="adm-form" onSubmit={save}>
         <h3>{editId ? 'Edit education' : 'New education'}</h3>
-        <div className="row2">
-          <TextField label="Period" value={form.yr} onChange={set('yr')} />
-          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
-        </div>
+        <TextField label="Period" value={form.yr} onChange={set('yr')} />
         <TextField label="Degree" value={form.degree} onChange={set('degree')} />
         <TextField label="School" value={form.school} onChange={set('school')} />
         <AreaField label="Note" value={form.note} onChange={set('note')} />
@@ -569,7 +573,7 @@ function EducationSection() {
               <div className="s">{e.yr}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ yr: e.yr, degree: e.degree, school: e.school, note: e.note, sort: String(e.sort) }); setEditId(e.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ yr: e.yr, degree: e.degree, school: e.school, note: e.note }); setEditId(e.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(e.id)}>Delete</button>
             </div>
           </div>

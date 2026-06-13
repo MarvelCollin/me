@@ -1,6 +1,6 @@
 import { useContent, findWork, workIndex } from '../content/store';
 import { Thumbnail } from '../components/Thumbnail';
-import { img } from '../lib/img';
+import { Gallery } from '../components/Gallery';
 
 export function ProjectDetail({ slug }: { slug: string }) {
   const { works: PROJECTS, loading } = useContent();
@@ -32,6 +32,15 @@ export function ProjectDetail({ slug }: { slug: string }) {
   const sections = [
     { label: 'Context', body: p.body[0] },
   ].filter(a => a.body);
+
+  const galleryImages: string[] = [];
+  const galleryCaptions: string[] = [];
+  if (p.cover) { galleryImages.push(p.cover); galleryCaptions.push(p.name); }
+  (p.images ?? []).forEach((src, i) => {
+    if (galleryImages.includes(src)) return;
+    galleryImages.push(src);
+    galleryCaptions.push(p.stills[i] ?? '');
+  });
 
   return (
     <div data-screen-label={'Project · ' + p.name}>
@@ -75,16 +84,7 @@ export function ProjectDetail({ slug }: { slug: string }) {
             </div>
           </div>
         </div>
-        <div className="story-stills">
-          {p.stills.map((s, i) => (
-            <div className="still" key={i}>
-              {p.images?.[i]
-                ? <img src={img(p.images[i], 1400)} alt={s} loading="lazy" decoding="async" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }} />
-                : <Thumbnail p={p} />}
-              <span className="lbl">{String(i + 1).padStart(2, '0')} · {s}</span>
-            </div>
-          ))}
-        </div>
+        <Gallery images={galleryImages} captions={galleryCaptions} name={p.name} />
         <div className="story-next">
           <div className="grid">
             <div className="nav-block">
