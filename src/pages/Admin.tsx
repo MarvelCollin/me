@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import type { FormEvent, ClipboardEvent, DragEvent, ChangeEvent } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import type { FormEvent, ClipboardEvent, DragEvent, ChangeEvent, ReactNode } from 'react';
 import { useContent } from '../content/store';
 import { isAuthed, login, logout } from '../lib/auth';
 import { TONE_NAMES } from '../content/tones';
@@ -11,6 +11,27 @@ type Tab = 'works' | 'skills' | 'experience' | 'education' | 'recognition';
 
 const lines = (v: string): string[] => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const unlines = (v: string[]): string => v.join('\n');
+
+const ToastCtx = createContext<(message: string) => void>(() => {});
+const useToast = () => useContext(ToastCtx);
+
+function ToastHost({ children }: { children: ReactNode }) {
+  const [toasts, setToasts] = useState<{ id: number; message: string }[]>([]);
+  const push = useCallback((message: string) => {
+    const id = Date.now() + Math.random();
+    setToasts((t) => [...t, { id, message }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2600);
+  }, []);
+
+  return (
+    <ToastCtx.Provider value={push}>
+      {children}
+      <div className="toast-host">
+        {toasts.map((t) => <div className="toast" key={t.id}>{t.message}</div>)}
+      </div>
+    </ToastCtx.Provider>
+  );
+}
 
 function TextField({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
   return (
@@ -194,6 +215,7 @@ function formToWork(f: WorkForm): api.WorkInput {
 
 function WorksSection() {
   const { works, refresh } = useContent();
+  const toast = useToast();
   const [form, setForm] = useState<WorkForm>(emptyWork);
   const [editId, setEditId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -210,6 +232,7 @@ function WorksSection() {
       if (editId) await api.updateWork(editId, input);
       else await api.createWork(input);
       await refresh();
+      toast(editId ? 'Project updated' : 'Project created');
       reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Save failed');
@@ -224,6 +247,7 @@ function WorksSection() {
     try {
       await api.deleteWork(id);
       await refresh();
+      toast('Project deleted');
       if (editId === id) reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Delete failed');
@@ -290,6 +314,7 @@ const emptySkill: SkillForm = { name: '', opinion: '' };
 
 function SkillsSection() {
   const { skills, refresh } = useContent();
+  const toast = useToast();
   const [form, setForm] = useState<SkillForm>(emptySkill);
   const [editId, setEditId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -305,6 +330,7 @@ function SkillsSection() {
       if (editId) await api.updateSkill(editId, input);
       else await api.createSkill(input);
       await refresh();
+      toast(editId ? 'Skill updated' : 'Skill created');
       reset();
     } catch (x) {
       setErr(x instanceof Error ? x.message : 'Save failed');
