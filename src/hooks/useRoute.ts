@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 
 export function useRoute(): string {
-  const get = () => (location.hash.replace('#', '') || '/').replace(/^\/+/, '/');
+  const get = () => location.pathname || '/';
   const [r, setR] = useState(get);
   useEffect(() => {
-    const onH = () => setR(get());
-    window.addEventListener('hashchange', onH);
-    return () => window.removeEventListener('hashchange', onH);
+    const onChange = () => setR(get());
+    window.addEventListener('popstate', onChange);
+    window.addEventListener('locationchange', onChange);
+    return () => {
+      window.removeEventListener('popstate', onChange);
+      window.removeEventListener('locationchange', onChange);
+    };
   }, []);
   return r;
 }

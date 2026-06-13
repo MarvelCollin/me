@@ -7,7 +7,7 @@ import { uploadImage } from '../lib/storage';
 import * as api from '../lib/api';
 import type { Project } from '../types';
 
-type Tab = 'works' | 'skills' | 'experience' | 'recognition';
+type Tab = 'works' | 'skills' | 'experience' | 'education' | 'recognition';
 
 const lines = (v: string): string[] => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const unlines = (v: string[]): string => v.join('\n');
@@ -423,8 +423,8 @@ function ExperienceSection() {
   );
 }
 
-interface AwardForm { yr: string; name: string; where: string; sort: string; }
-const emptyAward: AwardForm = { yr: '', name: '', where: '', sort: '0' };
+interface AwardForm { yr: string; name: string; where: string; image: string; sort: string; }
+const emptyAward: AwardForm = { yr: '', name: '', where: '', image: '', sort: '0' };
 
 function RecognitionSection() {
   const { recognition, refresh } = useContent();
@@ -439,7 +439,7 @@ function RecognitionSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), sort: Number(form.sort) || 0 };
+      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), image: form.image.trim() || undefined, sort: Number(form.sort) || 0 };
       if (editId) await api.updateRecognition(editId, input);
       else await api.createRecognition(input);
       await refresh();
@@ -475,6 +475,7 @@ function RecognitionSection() {
         </div>
         <TextField label="Name" value={form.name} onChange={set('name')} />
         <TextField label="Where" value={form.where} onChange={set('where')} />
+        <ImageDrop label="Photo" value={form.image} onChange={set('image')} />
         {err && <p className="adm-err">{err}</p>}
         <div className="adm-actions">
           <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
@@ -490,8 +491,86 @@ function RecognitionSection() {
               <div className="s">{a.yr} · {a.where}</div>
             </div>
             <div className="adm-item-actions">
-              <button onClick={() => { setForm({ yr: a.yr, name: a.name, where: a.where, sort: String(a.sort) }); setEditId(a.id); setErr(''); }}>Edit</button>
+              <button onClick={() => { setForm({ yr: a.yr, name: a.name, where: a.where, image: a.image ?? '', sort: String(a.sort) }); setEditId(a.id); setErr(''); }}>Edit</button>
               <button className="danger" onClick={() => remove(a.id)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface EduForm { yr: string; degree: string; school: string; note: string; sort: string; }
+const emptyEdu: EduForm = { yr: '', degree: '', school: '', note: '', sort: '0' };
+
+function EducationSection() {
+  const { education, refresh } = useContent();
+  const [form, setForm] = useState<EduForm>(emptyEdu);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const set = (k: keyof EduForm) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const reset = () => { setForm(emptyEdu); setEditId(null); setErr(''); };
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try {
+      const input: api.EducationInput = { yr: form.yr.trim(), degree: form.degree.trim(), school: form.school.trim(), note: form.note.trim(), sort: Number(form.sort) || 0 };
+      if (editId) await api.updateEducation(editId, input);
+      else await api.createEducation(input);
+      await refresh();
+      reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('Delete this education entry?')) return;
+    setBusy(true); setErr('');
+    try {
+      await api.deleteEducation(id);
+      await refresh();
+      if (editId === id) reset();
+    } catch (x) {
+      setErr(x instanceof Error ? x.message : 'Delete failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="adm-grid">
+      <form className="adm-form" onSubmit={save}>
+        <h3>{editId ? 'Edit education' : 'New education'}</h3>
+        <div className="row2">
+          <TextField label="Period" value={form.yr} onChange={set('yr')} />
+          <TextField label="Sort" type="number" value={form.sort} onChange={set('sort')} />
+        </div>
+        <TextField label="Degree" value={form.degree} onChange={set('degree')} />
+        <TextField label="School" value={form.school} onChange={set('school')} />
+        <AreaField label="Note" value={form.note} onChange={set('note')} />
+        {err && <p className="adm-err">{err}</p>}
+        <div className="adm-actions">
+          <button type="submit" className="adm-btn primary" disabled={busy}>{busy ? 'Saving…' : editId ? 'Update' : 'Create'}</button>
+          {editId && <button type="button" className="adm-btn" onClick={reset} disabled={busy}>Cancel</button>}
+        </div>
+      </form>
+      <div className="adm-list">
+        <h3>Education ({education.length})</h3>
+        {education.map((e) => (
+          <div className="adm-item" key={e.id}>
+            <div>
+              <div className="t">{e.degree} <span className="s">{e.school}</span></div>
+              <div className="s">{e.yr}</div>
+            </div>
+            <div className="adm-item-actions">
+              <button onClick={() => { setForm({ yr: e.yr, degree: e.degree, school: e.school, note: e.note, sort: String(e.sort) }); setEditId(e.id); setErr(''); }}>Edit</button>
+              <button className="danger" onClick={() => remove(e.id)}>Delete</button>
             </div>
           </div>
         ))}
@@ -508,10 +587,10 @@ function Gate({ onPass }: { onPass: () => void }) {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true); setErr('');
-    const ok = await login(pw);
+    const res = await login(pw);
     setBusy(false);
-    if (ok) onPass();
-    else { setErr('Incorrect password.'); setPw(''); }
+    if (res.ok) onPass();
+    else { setErr(res.error || 'Sign in failed.'); setPw(''); }
   };
 
   return (
@@ -528,7 +607,7 @@ function Gate({ onPass }: { onPass: () => void }) {
           autoFocus
         />
         {err && <p className="adm-err">{err}</p>}
-        <button type="submit" className="adm-btn primary" disabled={busy || !pw}>{busy ? 'Checking…' : 'Unlock'}</button>
+        <button type="submit" className="adm-btn primary" disabled={busy || !pw}>{busy ? 'Signing in…' : 'Sign in'}</button>
       </form>
     </div>
   );
@@ -541,7 +620,8 @@ function Panel({ onLogout }: { onLogout: () => void }) {
     { k: 'works', label: 'Works' },
     { k: 'skills', label: 'Skills' },
     { k: 'experience', label: 'Experience' },
-    { k: 'recognition', label: 'Recognition' },
+    { k: 'education', label: 'Education' },
+    { k: 'recognition', label: 'Licenses & Awards' },
   ];
 
   return (
@@ -560,6 +640,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
       {tab === 'works' && <WorksSection />}
       {tab === 'skills' && <SkillsSection />}
       {tab === 'experience' && <ExperienceSection />}
+      {tab === 'education' && <EducationSection />}
       {tab === 'recognition' && <RecognitionSection />}
     </div>
   );

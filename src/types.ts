@@ -45,6 +45,16 @@ export interface Award {
   yr: string;
   name: string;
   where: string;
+  image?: string;
+  sort: number;
+}
+
+export interface Education {
+  id: string;
+  yr: string;
+  degree: string;
+  school: string;
+  note: string;
   sort: number;
 }
 

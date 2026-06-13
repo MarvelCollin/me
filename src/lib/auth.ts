@@ -19,14 +19,14 @@ async function sessionToken(): Promise<string> {
   return sha256('pk-session::' + import.meta.env.VITE_ADMIN_PASSWORD);
 }
 
-export async function login(input: string): Promise<boolean> {
+export async function login(password: string): Promise<{ ok: boolean; error?: string }> {
   const expected = import.meta.env.VITE_ADMIN_PASSWORD;
-  if (!expected) return false;
-  const inputHash = await sha256(input);
-  const expectedHash = await sha256(expected);
-  if (!constantTimeEqual(inputHash, expectedHash)) return false;
+  if (!expected) return { ok: false, error: 'Admin password is not configured (VITE_ADMIN_PASSWORD).' };
+  const a = await sha256(password);
+  const b = await sha256(expected);
+  if (!constantTimeEqual(a, b)) return { ok: false, error: 'Incorrect password.' };
   sessionStorage.setItem(SESSION_KEY, await sessionToken());
-  return true;
+  return { ok: true };
 }
 
 export async function isAuthed(): Promise<boolean> {

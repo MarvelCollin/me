@@ -1,10 +1,11 @@
 import { supabase, TABLES } from './supabase';
-import type { Project, Skill, HistoryItem, Award } from '../types';
+import type { Project, Skill, HistoryItem, Award, Education } from '../types';
 
 export type WorkInput = Omit<Project, 'id'>;
 export type SkillInput = Omit<Skill, 'id'>;
 export type ExperienceInput = Omit<HistoryItem, 'id'>;
 export type RecognitionInput = Omit<Award, 'id'>;
+export type EducationInput = Omit<Education, 'id'>;
 
 interface WorkRow {
   id: string;
@@ -47,6 +48,7 @@ interface RecognitionRow {
   yr: string;
   name: string;
   place: string;
+  image: string | null;
   sort: number;
 }
 
@@ -102,11 +104,11 @@ function experienceToRow(e: ExperienceInput) {
 }
 
 function rowToRecognition(r: RecognitionRow): Award {
-  return { id: r.id, yr: r.yr, name: r.name, where: r.place, sort: r.sort };
+  return { id: r.id, yr: r.yr, name: r.name, where: r.place, image: r.image ?? undefined, sort: r.sort };
 }
 
 function recognitionToRow(a: RecognitionInput) {
-  return { yr: a.yr, name: a.name, place: a.where, sort: a.sort };
+  return { yr: a.yr, name: a.name, place: a.where, image: a.image ?? null, sort: a.sort };
 }
 
 function guard<T>(data: T | null, error: { message: string } | null): T {
@@ -191,5 +193,25 @@ export async function updateRecognition(id: string, input: RecognitionInput): Pr
 
 export async function deleteRecognition(id: string): Promise<void> {
   const { error } = await supabase.from(TABLES.recognition).delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function fetchEducation(): Promise<Education[]> {
+  const { data, error } = await supabase.from(TABLES.education).select('*').order('sort', { ascending: true });
+  return guard(data as Education[] | null, error);
+}
+
+export async function createEducation(input: EducationInput): Promise<void> {
+  const { error } = await supabase.from(TABLES.education).insert(input);
+  if (error) throw new Error(error.message);
+}
+
+export async function updateEducation(id: string, input: EducationInput): Promise<void> {
+  const { error } = await supabase.from(TABLES.education).update(input).eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteEducation(id: string): Promise<void> {
+  const { error } = await supabase.from(TABLES.education).delete().eq('id', id);
   if (error) throw new Error(error.message);
 }

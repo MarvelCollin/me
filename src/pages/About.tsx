@@ -1,7 +1,8 @@
 import { useContent } from '../content/store';
+import { img } from '../lib/img';
 
 export function About() {
-  const { skills: SKILLS, experience: HISTORY, recognition: AWARDS } = useContent();
+  const { skills: SKILLS, experience: HISTORY, recognition: AWARDS, education: EDUCATION } = useContent();
   return (
     <div data-screen-label="About">
       <section className="page">
@@ -10,7 +11,7 @@ export function About() {
             Computer Science student at BINUS University and a full-stack engineer. I build web applications and care about the details that make them feel right.
           </p>
           <p className="about-body">
-            I work across the stack — TypeScript and React on the front, Go, .NET Core, and PHP on the back, with microservices and RabbitMQ in production on the BINUS laboratory platform. On the side I build games with Three.js, ML experiments in Python, and award-winning robotics.
+            I work across the stack: TypeScript and React on the front, Go, .NET Core, and PHP on the back, with microservices and RabbitMQ in production on the BINUS laboratory platform. On the side I build games with Three.js, ML experiments in Python, and award-winning robotics.
           </p>
           <p className="about-body">
             Based in Jakarta. Open to collaborations and interesting projects.
@@ -71,15 +72,33 @@ export function About() {
         </div>
         <div className="about-section">
           <div className="sec-label">
+            <span className="l">Education</span>
+            <span className="r">2020 to present</span>
+          </div>
+          <div className="history">
+            {EDUCATION.map((e) => (
+              <div className="job" key={e.id}>
+                <div className="yr">{e.yr}</div>
+                <div>
+                  <div className="role">{e.degree} <span className="at">{e.school}</span></div>
+                  <div className="note">{e.note}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="about-section">
+          <div className="sec-label">
             <span className="l">Licenses & Awards</span>
             <span className="r">2022 to 2025</span>
           </div>
           <div className="awards">
-            {AWARDS.map((a, i) => (
-              <div className="award" key={i}>
+            {AWARDS.map((a) => (
+              <div className="award" key={a.id}>
                 <div className="yr">{a.yr}</div>
                 <div className="name">{a.name}</div>
                 <div className="where">{a.where}</div>
+                {a.image && <img className="award-img" src={img(a.image, 1000)} alt={a.name} loading="lazy" decoding="async" />}
               </div>
             ))}
           </div>

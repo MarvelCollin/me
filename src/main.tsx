@@ -3,17 +3,9 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { ContentProvider } from './content/store.tsx';
+import { initNavInterception } from './utils/nav.ts';
 
-function initClock() {
-  const el = document.getElementById('clock');
-  if (!el) return;
-  const tick = () => {
-    const d = new Date();
-    el.textContent = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  };
-  tick();
-  setInterval(tick, 30000);
-}
+initNavInterception();
 
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
@@ -22,5 +14,3 @@ createRoot(document.getElementById('app')!).render(
     </ContentProvider>
   </StrictMode>,
 );
-
-initClock();

@@ -9,7 +9,7 @@ export function WorkTable({ list }: { list: Project[] }) {
       {list.map(p => (
         <a
           key={p.num}
-          href={'#/work/' + p.slug}
+          href={'/work/' + p.slug}
           className="row"
           onMouseMove={(e) => setHover({ p, x: e.clientX, y: e.clientY })}
           onMouseLeave={() => setHover(null)}

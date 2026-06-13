@@ -49,7 +49,7 @@ export function Work() {
                 data-idx={i}
                 className={'spread ' + v}
               >
-                <a className="thumb" href={'#/work/' + p.slug}>
+                <a className="thumb" href={'/work/' + p.slug}>
                   <Thumbnail p={p} />
                   <span className="corner">{p.num} · {p.year}</span>
                   <span className="corner r">{p.tag}</span>
@@ -64,7 +64,7 @@ export function Work() {
                     <span className="dot">·</span>
                     <span>{p.stack}</span>
                   </div>
-                  <a className="read" href={'#/work/' + p.slug}>View project →</a>
+                  <a className="read" href={'/work/' + p.slug}>View project →</a>
                 </div>
               </div>
             );

@@ -12,4 +12,5 @@ export const TABLES = {
   skills: 'portofolio_kolin_skills',
   experience: 'portofolio_kolin_experience',
   recognition: 'portofolio_kolin_recognition',
+  education: 'portofolio_kolin_education',
 } as const;
