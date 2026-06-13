@@ -1,15 +1,15 @@
 :root{
-  --bg:#fcf9ea;
-  --bg-2:#f6f1de;
-  --bg-3:#efe9d2;
-  --highlight:#dcefe9;
-  --fg:#2b2a26;
-  --fg-dim:#6d6b61;
-  --muted:#a39f90;
-  --line:#e6e0ca;
-  --line-soft:rgba(43,42,38,.06);
-  --accent:#d96a6a;
-  --accent-soft:#f2a8a8;
+  --bg:#0c0d0b;
+  --bg-2:#141613;
+  --bg-3:#1d1f1a;
+  --highlight:#13201d;
+  --fg:#e8e9df;
+  --fg-dim:#888a80;
+  --muted:#4e5048;
+  --line:#252820;
+  --line-soft:rgba(232,233,223,.04);
+  --accent:#57c4b2;
+  --accent-soft:#79d3c4;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
@@ -323,7 +323,7 @@ footer span a:hover{color:var(--accent);}
 .img-cell button:hover{background:var(--accent);color:var(--bg);}
 @media(max-width:860px){.adm-grid{grid-template-columns:1fr;}}
 
-/* keep captions readable over photos on the light theme */
+/* keep captions readable over photos */
 .spread .thumb::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(20,18,14,.5),transparent 42%);pointer-events:none;}
 .spread .thumb .corner{color:rgba(247,244,234,.85);text-shadow:0 1px 8px rgba(0,0,0,.4);}
 .spread .thumb .name-overlay{color:#f7f4ea;text-shadow:0 1px 14px rgba(0,0,0,.5);}
