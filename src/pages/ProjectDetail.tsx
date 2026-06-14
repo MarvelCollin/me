@@ -33,6 +33,7 @@ export function ProjectDetail({ slug }: { slug: string }) {
     { label: 'Context', body: p.body[0] },
   ].filter(a => a.body);
 
+  const repo = p.repo && /^https?:\/\//i.test(p.repo) ? p.repo : null;
   const galleryImages = (p.images ?? []).filter((src) => src && src !== p.cover);
   const galleryCaptions = galleryImages.map((_, i) => p.stills[i] ?? '');
 
@@ -48,9 +49,9 @@ export function ProjectDetail({ slug }: { slug: string }) {
             <span className="num">{p.num} · {p.year}</span>
             <h1>{p.name}</h1>
             <p className="tagline"><b>{p.brief}</b></p>
-            {p.repo && (
+            {repo && (
               <div className="story-links">
-                <a className="story-link" href={p.repo} target="_blank" rel="noreferrer">Repository →</a>
+                <a className="story-link" href={repo} target="_blank" rel="noreferrer">Repository →</a>
               </div>
             )}
           </div>

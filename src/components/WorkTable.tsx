@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import type { Project, HoverState } from '../types';
 import { Thumbnail } from './Thumbnail';
 
@@ -6,11 +6,12 @@ export function WorkTable({ list }: { list: Project[] }) {
   const [hover, setHover] = useState<HoverState | null>(null);
   return (
     <div className="wt">
-      {list.map(p => (
+      {list.map((p, i) => (
         <a
           key={p.num}
           href={'/work/' + p.slug}
           className="row"
+          style={{ '--r': i } as CSSProperties}
           onMouseMove={(e) => setHover({ p, x: e.clientX, y: e.clientY })}
           onMouseLeave={() => setHover(null)}
         >

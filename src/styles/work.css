@@ -1,0 +1,334 @@
+.work-stage {
+  position: relative;
+}
+.work-head {
+  padding-bottom: 60px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.work-head h1 {
+  font-family: var(--font);
+  font-size: clamp(40px, 5.6vw, 80px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  max-width: 18ch;
+}
+.work-head h1 .dim {
+  color: var(--fg-dim);
+  font-weight: 300;
+}
+.work-head .note {
+  font-size: 14px;
+  color: var(--fg-dim);
+  line-height: 1.6;
+}
+.work-filter {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0 40px;
+  flex-wrap: wrap;
+}
+.work-filter button {
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg-dim);
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition:
+    color 0.25s,
+    border-color 0.25s,
+    background 0.25s;
+}
+.work-filter button:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+.work-filter button.on {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.wt {
+  width: 100%;
+}
+.wt .row {
+  display: grid;
+  grid-template-columns: 40px 1fr 220px 100px 40px;
+  gap: 24px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  position: relative;
+}
+.wt .row:hover {
+  padding-left: 14px;
+}
+.wt .row .num {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.wt .row .name {
+  font-size: 22px;
+  letter-spacing: 0;
+  font-weight: 500;
+  line-height: 1.15;
+}
+.wt .row .name .desc {
+  color: var(--fg-dim);
+  font-weight: 300;
+}
+.wt .row:hover .name {
+  color: var(--accent);
+}
+.wt .row .role {
+  font-size: 13px;
+  color: var(--fg-dim);
+  font-weight: 300;
+}
+.wt .row .year {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.wt .row .arr {
+  justify-self: end;
+  font-size: 18px;
+  color: var(--muted);
+  transition:
+    transform 0.35s,
+    color 0.25s;
+}
+.wt .row:hover .arr {
+  transform: translateX(6px);
+  color: var(--accent);
+}
+
+.pv {
+  position: fixed;
+  width: 280px;
+  height: 180px;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.2s;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.pv.on {
+  opacity: 1;
+}
+.pv .pv-label {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-family: var(--font);
+}
+.pv .pv-name {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  font-size: 20px;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--accent);
+}
+.pv .pv-tex {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0,
+    transparent 8px,
+    rgba(200, 164, 74, 0.07) 8px,
+    rgba(200, 164, 74, 0.07) 9px
+  );
+}
+.pv .pv-label {
+  color: rgba(247, 244, 234, 0.85);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+.pv .pv-name {
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+.gallery3d {
+  position: relative;
+  padding-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 8vw, 110px);
+  overflow: visible;
+  perspective: 1700px;
+  perspective-origin: 50% 26%;
+}
+.card3d {
+  --i: 0;
+  position: relative;
+  width: clamp(280px, 38vw, 500px);
+  margin-left: calc(var(--i, 0) * 5.4%);
+  opacity: 0;
+  transform: translateY(44px);
+  animation: card3d-in 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.07s);
+  will-change: transform, opacity;
+}
+@keyframes card3d-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card3d {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+.card3d:first-child {
+  width: clamp(320px, 46vw, 600px);
+}
+.card3d-face {
+  display: block;
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--bg-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: rotateX(4deg) rotateY(-12deg) rotateZ(-2deg);
+  box-shadow:
+    0 48px 100px -36px rgba(0, 0, 0, 0.9),
+    0 16px 40px -18px rgba(0, 0, 0, 0.65);
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.6s ease,
+    border-color 0.4s ease;
+}
+.card3d:nth-child(even) .card3d-face {
+  transform: rotateX(4deg) rotateY(-12deg) rotateZ(2deg);
+}
+.card3d:nth-child(3n) .card3d-face {
+  transform: rotateX(5deg) rotateY(-9deg) rotateZ(-1deg) translateZ(-30px)
+    scale(0.97);
+}
+.card3d-face:hover {
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.03);
+  box-shadow: 0 60px 130px -36px rgba(0, 0, 0, 0.92);
+  border-color: rgba(255, 255, 255, 0.16);
+  z-index: 3;
+}
+.card3d-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.66) 0%,
+    rgba(0, 0, 0, 0.14) 32%,
+    transparent 56%
+  );
+}
+.card3d-num,
+.card3d-tag {
+  position: absolute;
+  top: 16px;
+  z-index: 3;
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247, 244, 234, 0.9);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+}
+.card3d-num {
+  left: 18px;
+}
+.card3d-tag {
+  right: 18px;
+}
+.card3d-overlay {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.card3d-name {
+  font-size: clamp(24px, 2.6vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: #f7f4ea;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
+}
+.card3d-meta {
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247, 244, 234, 0.72);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+.card3d-foot {
+  margin-top: 18px;
+  padding-left: 4px;
+}
+.card3d-icons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.card3d-icons a {
+  display: inline-flex;
+  color: var(--fg-dim);
+  font-size: 18px;
+  transition:
+    color 0.25s,
+    transform 0.25s;
+}
+.card3d-icons a:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.story-end {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 80px 0 0;
+  margin-top: 40px;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.story-end .se-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line), transparent);
+}
+.story-end .se-text {
+  white-space: nowrap;
+  color: var(--fg-dim);
+}

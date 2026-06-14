@@ -1,81 +1,51 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useContent } from '../content/store';
-import { Thumbnail } from '../components/Thumbnail';
+import { WorkGallery3D } from '../components/WorkGallery3D';
 
 export function Work() {
   const { works: PROJECTS, loading } = useContent();
   const [filter, setFilter] = useState('all');
-  const spreadRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.tag === filter);
-  const layouts = ['v-a', 'v-b', 'v-a', 'v-c', 'v-b', 'v-a', 'v-b', 'v-c', 'v-a', 'v-b'];
-
-  useEffect(() => {
-    spreadRefs.current = spreadRefs.current.slice(0, filtered.length);
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add('in');
-        });
-      },
-      { threshold: [0.15], rootMargin: '-10% 0px -25% 0px' }
-    );
-    spreadRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, [filtered.length]);
+  const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.tag === filter);
+  const filters = [
+    { key: 'all', label: `All (${PROJECTS.length})` },
+    { key: 'client', label: `Client (${PROJECTS.filter((p) => p.tag === 'client').length})` },
+    { key: 'product', label: `Product (${PROJECTS.filter((p) => p.tag === 'product').length})` },
+    { key: 'personal', label: `Personal (${PROJECTS.filter((p) => p.tag === 'personal').length})` },
+  ];
 
   return (
     <div data-screen-label="Work">
-      <section className="page work-stage">
-        <div className="work-head">
-          <h1>Projects</h1>
-          <p className="note">Ten projects from 2021 to 2025. Client work, products, and personal tools.</p>
+      <section className="relative z-10 mx-auto max-w-[1320px] px-10 pt-[140px] max-[900px]:px-[22px] max-[900px]:pt-[100px]">
+        <div className="border-b border-line pb-[60px]">
+          <h1 className="max-w-[18ch] font-sans text-[clamp(40px,5.6vw,80px)] font-semibold leading-[1.04] tracking-[-0.025em]">
+            Projects
+          </h1>
+          <p className="mt-4 text-sm leading-relaxed text-fg-dim">
+            Ten projects from 2021 to 2025. Client work, products, and personal tools.
+          </p>
         </div>
-
-        <div className="work-filter">
-          <button className={filter === 'all' ? 'on' : ''} onClick={() => setFilter('all')}>All ({PROJECTS.length})</button>
-          <button className={filter === 'client' ? 'on' : ''} onClick={() => setFilter('client')}>Client ({PROJECTS.filter(p => p.tag === 'client').length})</button>
-          <button className={filter === 'product' ? 'on' : ''} onClick={() => setFilter('product')}>Product ({PROJECTS.filter(p => p.tag === 'product').length})</button>
-          <button className={filter === 'personal' ? 'on' : ''} onClick={() => setFilter('personal')}>Personal ({PROJECTS.filter(p => p.tag === 'personal').length})</button>
-        </div>
-
-        <div className="work-spread">
-          {loading && PROJECTS.length === 0 && <p className="note">Loading projects…</p>}
-          {filtered.map((p, i) => {
-            const v = layouts[PROJECTS.indexOf(p) % layouts.length] || 'v-a';
-            return (
-              <div
-                key={p.slug}
-                ref={(el) => { spreadRefs.current[i] = el; }}
-                data-idx={i}
-                className={'spread ' + v}
-              >
-                <a className="thumb" href={'/work/' + p.slug}>
-                  <Thumbnail p={p} />
-                  <span className="corner">{p.num} · {p.year}</span>
-                  <span className="corner r">{p.tag}</span>
-                  <span className="name-overlay">{p.name}</span>
-                </a>
-                <div className="meta">
-                  <div className="num">{p.num} / {String(PROJECTS.length).padStart(2, '0')}</div>
-                  <h3>{p.name}</h3>
-                  <p className="desc-line">{p.desc}</p>
-                  <div className="mini-specs">
-                    <span>{p.year}</span>
-                    <span className="dot">·</span>
-                    <span>{p.stack}</span>
-                  </div>
-                  <a className="read" href={'/work/' + p.slug}>View project →</a>
-                </div>
-              </div>
-            );
-          })}
-          <div className="story-end">
-            <span className="se-line" />
-            <span className="se-text">End of list</span>
-            <span className="se-line" />
-          </div>
+        <div className="mt-6 mb-2 flex flex-wrap gap-2">
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={
+                'cursor-pointer border px-[14px] py-[7px] text-xs tracking-[0.04em] transition-colors ' +
+                (filter === f.key
+                  ? 'border-accent bg-accent text-bg'
+                  : 'border-line text-fg-dim hover:border-muted hover:text-fg')
+              }
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </section>
+      {loading && PROJECTS.length === 0 ? (
+        <p className="mx-auto max-w-[1320px] px-10 py-20 text-sm text-fg-dim">Loading projects…</p>
+      ) : (
+        <WorkGallery3D key={filter} projects={filtered} />
+      )}
     </div>
   );
 }

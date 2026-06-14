@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useRoute } from './hooks/useRoute';
 import { parseRoute, runTransition } from './utils/routes';
 import { Home } from './pages/Home';
@@ -6,7 +6,8 @@ import { Work } from './pages/Work';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
-import { Admin } from './pages/Admin';
+
+const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
 function App() {
   const route = useRoute();
@@ -38,7 +39,7 @@ function App() {
   if (parsed.kind === 'work') return <Work />;
   if (parsed.kind === 'about') return <About />;
   if (parsed.kind === 'contact') return <Contact />;
-  if (parsed.kind === 'admin') return <Admin />;
+  if (parsed.kind === 'admin') return <Suspense fallback={<section className="page admin"><p className="note">…</p></section>}><Admin /></Suspense>;
   return <Home />;
 }
 

@@ -24,3 +24,6 @@ supabase/
 *.njsproj
 *.sln
 *.sw?
+
+.tmp/
+.playwright-mcp/

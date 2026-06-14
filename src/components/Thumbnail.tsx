@@ -19,7 +19,7 @@ export function Thumbnail({ p }: { p: Project }) {
   const tone = TONES[p.tone] || TONES['warm'];
   return (
     <span className="ph-wrap" style={{ position: 'absolute', inset: 0, display: 'block' }}>
-      <span style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at ${tone.pos}, ${tone.glow} 0%, transparent 55%), linear-gradient(180deg, ${tone.tint}, transparent 70%)` }}></span>
+      <span style={{ position: 'absolute', inset: 0, background: `radial-gradient(120% 85% at ${tone.pos}, ${tone.glow}, transparent 70%), radial-gradient(85% 65% at ${tone.pos}, ${tone.glow}, transparent 52%), linear-gradient(155deg, ${tone.tint}, transparent 60%)` }}></span>
       <span className="ph-tex"></span>
     </span>
   );
