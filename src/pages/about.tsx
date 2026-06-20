@@ -1,12 +1,13 @@
 import { useContent } from '../content/use-content';
 import { img } from '../lib/img';
+import { MetaList } from '../components/meta-list';
 
 export function About() {
   const { skills: SKILLS, experience: HISTORY, recognition: AWARDS, education: EDUCATION } = useContent();
   return (
     <div data-screen-label="About">
       <section className="mx-auto max-w-[1320px] px-10 pt-[140px] pb-20 max-[900px]:px-[22px] max-[900px]:pt-[100px] max-[560px]:pt-[92px]">
-        <div className="border-b border-line pb-16">
+        <div className="pb-16">
           <span className="mb-6 inline-block -rotate-2 font-hand text-[clamp(32px,4vw,54px)] leading-none text-accent-soft">about</span>
           <p className="max-w-[30ch] font-sans text-[clamp(24px,2.6vw,36px)] font-medium leading-[1.3] tracking-[-0.015em]">
             Computer Science student at BINUS University and a full-stack engineer. I build web applications and care about the details that make them feel right.
@@ -19,28 +20,23 @@ export function About() {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-8 border-b border-line py-8 max-[900px]:grid-cols-2 max-[900px]:gap-5 max-[560px]:grid-cols-1">
-          <div className="flex flex-col gap-2 text-[14px] text-fg-dim">
-            <span className="block text-[11px] uppercase tracking-[0.1em] text-muted">Now</span>
-            <span>Full-stack engineer, BINUS R&D.</span>
-          </div>
-          <div className="flex flex-col gap-2 text-[14px] text-fg-dim">
-            <span className="block text-[11px] uppercase tracking-[0.1em] text-muted">Based</span>
-            <span>Jakarta, Indonesia · GMT+7</span>
-          </div>
-          <div className="flex flex-col gap-2 text-[14px] text-fg-dim">
-            <span className="block text-[11px] uppercase tracking-[0.1em] text-muted">Studying</span>
-            <span>Computer Science, BINUS University</span>
-          </div>
-          <div className="flex flex-col gap-2 text-[14px] text-fg-dim">
-            <span className="block text-[11px] uppercase tracking-[0.1em] text-muted">Elsewhere</span>
-            <div className="flex flex-wrap gap-3.5">
-              <a className="text-fg-dim transition-colors hover:text-accent" href="https://github.com/MarvelCollin" target="_blank" rel="noreferrer">github</a>
-              <a className="text-fg-dim transition-colors hover:text-accent" href="https://www.linkedin.com/in/marvel-collin-0244a21ba/" target="_blank" rel="noreferrer">linkedin</a>
-              <a className="text-fg-dim transition-colors hover:text-accent" href="https://www.instagram.com/marvelcolin_/" target="_blank" rel="noreferrer">instagram</a>
-            </div>
-          </div>
-        </div>
+        <MetaList
+          items={[
+            { label: 'Now', value: 'Full-stack engineer, BINUS R&D.' },
+            { label: 'Based', value: 'Jakarta, Indonesia · GMT+7' },
+            { label: 'Studying', value: 'Computer Science, BINUS University' },
+            {
+              label: 'Elsewhere',
+              value: (
+                <span className="flex flex-wrap gap-3.5">
+                  <a className="text-fg-dim transition-colors hover:text-accent" href="https://github.com/MarvelCollin" target="_blank" rel="noreferrer">github</a>
+                  <a className="text-fg-dim transition-colors hover:text-accent" href="https://www.linkedin.com/in/marvel-collin-0244a21ba/" target="_blank" rel="noreferrer">linkedin</a>
+                  <a className="text-fg-dim transition-colors hover:text-accent" href="https://www.instagram.com/marvelcolin_/" target="_blank" rel="noreferrer">instagram</a>
+                </span>
+              ),
+            },
+          ]}
+        />
 
         <div className="pt-20">
           <div className="mb-2 flex items-baseline justify-between border-b border-line pb-[14px]">

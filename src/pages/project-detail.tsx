@@ -1,6 +1,7 @@
 import { useContent, findWork, workIndex } from '../content/use-content';
 import { Thumbnail } from '../components/thumbnail';
 import { Gallery } from '../components/gallery';
+import { MetaList } from '../components/meta-list';
 import { Clip } from '../components/clip';
 import { ClipDefs } from '../components/clip-defs';
 
@@ -93,19 +94,16 @@ export function ProjectDetail({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <section className="border-y border-line px-10 py-10 max-[900px]:px-[22px] max-[900px]:py-8">
-          <div className="mx-auto grid max-w-[1320px] grid-cols-4 gap-8 max-[900px]:grid-cols-2 max-[900px]:gap-y-6 max-[560px]:grid-cols-1">
-            {[
-              { k: 'Client', v: p.client },
-              { k: 'Role', v: p.role },
-              { k: 'Stack', v: p.stack },
-              { k: 'Year', v: String(p.year) },
-            ].map((c) => (
-              <div key={c.k}>
-                <div className="mb-1.5 font-sans text-[11px] uppercase tracking-[0.12em] text-muted">{c.k}</div>
-                <div className="font-sans text-[16px] leading-[1.3] text-fg">{c.v}</div>
-              </div>
-            ))}
+        <section className="px-10 py-10 max-[900px]:px-[22px] max-[900px]:py-8">
+          <div className="mx-auto max-w-[1320px]">
+            <MetaList
+              items={[
+                { label: 'Client', value: p.client },
+                { label: 'Role', value: p.role },
+                { label: 'Stack', value: p.stack },
+                { label: 'Year', value: String(p.year) },
+              ]}
+            />
           </div>
         </section>
 

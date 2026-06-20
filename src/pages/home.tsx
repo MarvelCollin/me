@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useContent, findWork } from '../content/use-content';
 import { Thumbnail } from '../components/thumbnail';
+import { MetaList } from '../components/meta-list';
 import { useColumnCount } from '../hooks/use-column-count';
 import type { Project } from '../Interface/IProject';
 
@@ -118,23 +119,15 @@ export function Home() {
                 </div>
               </div>
             </a>
-            <div className="mt-8 grid grid-cols-4 gap-6 border-y border-line py-6 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
-              <div>
-                <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-muted">Type</div>
-                <div className="text-[15px]">{feature.tag}</div>
-              </div>
-              <div>
-                <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-muted">Role</div>
-                <div className="text-[15px]">{feature.role}</div>
-              </div>
-              <div>
-                <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-muted">Stack</div>
-                <div className="text-[15px]">{feature.stack}</div>
-              </div>
-              <div>
-                <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-muted">Result</div>
-                <div className="text-[15px]">{feature.result}</div>
-              </div>
+            <div className="mt-8">
+              <MetaList
+                items={[
+                  { label: 'Type', value: feature.tag },
+                  { label: 'Role', value: feature.role },
+                  { label: 'Stack', value: feature.stack },
+                  { label: 'Result', value: feature.result },
+                ]}
+              />
             </div>
           </div>
         )}
