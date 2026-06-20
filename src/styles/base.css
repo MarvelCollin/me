@@ -155,3 +155,33 @@ main {
   color: var(--bg);
   border-color: var(--fg);
 }
+@keyframes lb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lb-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.9) rotate(-2.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+.lb-fade {
+  animation: lb-fade 0.25s ease both;
+}
+.lb-pop {
+  animation: lb-pop 0.34s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-fade,
+  .lb-pop {
+    animation: none;
+  }
+}

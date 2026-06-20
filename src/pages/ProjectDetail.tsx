@@ -1,11 +1,14 @@
 import { useContent, findWork, workIndex } from '../content/store';
 import { Thumbnail } from '../components/Thumbnail';
 import { Gallery } from '../components/Gallery';
+import { Clip, ClipDefs } from '../components/Clip';
 
 const BACK_CLASS =
   'group fixed left-10 top-[84px] z-[60] font-sans text-[11px] uppercase tracking-[0.12em] text-fg-dim transition-colors hover:text-accent max-[900px]:left-[22px]';
 const PAGE_CLASS =
   'mx-auto max-w-[1320px] px-10 pt-[140px] pb-20 max-[900px]:px-[22px] max-[900px]:pt-[100px] max-[560px]:pt-[92px]';
+const BOARD =
+  'bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]';
 
 export function ProjectDetail({ slug }: { slug: string }) {
   const { works: PROJECTS, loading } = useContent();
@@ -43,67 +46,76 @@ export function ProjectDetail({ slug }: { slug: string }) {
 
   return (
     <div data-screen-label={'Project · ' + p.name}>
+      <ClipDefs />
       <a className={BACK_CLASS} href="/work">
         <span className="mr-2 inline-block transition-transform group-hover:-translate-x-1">←</span> All projects
       </a>
       <div className="relative overflow-hidden">
-        <div className="relative flex h-screen min-h-[600px] items-end overflow-hidden px-10 pb-20 before:absolute before:inset-0 before:z-[1] before:content-[''] before:bg-[linear-gradient(180deg,rgba(12,13,11,0.6)_0%,rgba(12,13,11,0.15)_26%,rgba(12,13,11,0.1)_46%,rgba(12,13,11,0.82)_86%,var(--bg)_100%)] max-[900px]:h-[80vh] max-[900px]:px-[22px] max-[900px]:pb-[60px]">
-          <div className="absolute inset-0 z-0">
-            <Thumbnail p={p} />
-          </div>
-          <div className="relative z-[2] mx-auto w-full max-w-[1320px]">
-            <span className="mb-7 block font-sans text-[13px] uppercase tracking-[0.13em] text-[rgba(247,244,234,0.82)] [text-shadow:0_1px_10px_rgba(0,0,0,0.6)]">
-              {p.num} · {p.year}
-            </span>
-            <h1 className="mb-6 font-sans text-[clamp(60px,11vw,180px)] font-bold leading-[0.92] tracking-[-0.035em] text-[#f7f4ea] [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
-              {p.name}
-            </h1>
-            <p className="max-w-[34ch] text-[clamp(20px,2.2vw,32px)] font-light leading-[1.3] text-[rgba(247,244,234,0.78)] [text-shadow:0_1px_14px_rgba(0,0,0,0.55)]">
-              <b className="font-normal text-white">{p.brief}</b>
-            </p>
-            {repo && (
-              <div className="mt-[30px] flex flex-wrap gap-3.5">
-                <a
-                  className="rounded-lg border border-line bg-[rgba(12,13,11,0.55)] px-[18px] py-2.5 font-sans text-[13px] tracking-[0.04em] text-fg transition-colors hover:border-accent hover:text-accent"
-                  href={repo}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Repository →
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
+        <section className={'relative px-10 pb-20 pt-[150px] max-[900px]:px-[22px] max-[900px]:pb-12 max-[900px]:pt-[120px] ' + BOARD}>
+          <div className="mx-auto grid max-w-[1320px] grid-cols-[1.04fr_0.96fr] items-center gap-16 max-[900px]:grid-cols-1 max-[900px]:gap-12">
+            <div className="max-[900px]:order-2">
+              <span className="mb-4 inline-block -rotate-2 font-hand text-[clamp(30px,3.6vw,50px)] leading-none text-accent-soft">{p.tag}</span>
+              <div className="mb-5 font-sans text-[12px] uppercase tracking-[0.14em] text-muted">{p.num} · {p.year}</div>
+              <h1 className="font-sans text-[clamp(52px,7.4vw,108px)] font-bold leading-[0.94] tracking-[-0.03em] text-fg">{p.name}</h1>
+              <p className="mt-6 max-w-[42ch] text-[clamp(18px,2vw,24px)] font-light leading-[1.4] text-fg-dim">
+                <b className="font-normal text-fg">{p.brief}</b>
+              </p>
+              {repo && (
+                <div className="mt-9 flex flex-wrap gap-3.5">
+                  <a
+                    className="rounded-lg border border-line bg-bg-2 px-[18px] py-2.5 font-sans text-[13px] tracking-[0.04em] text-fg transition-colors hover:border-accent hover:text-accent"
+                    href={repo}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Repository →
+                  </a>
+                </div>
+              )}
+            </div>
 
-        <div className="border-y border-line bg-bg-2 px-10 py-9">
-          <div className="mx-auto grid max-w-[1320px] grid-cols-4 gap-8 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
+            <div className="relative pt-2 max-[900px]:order-1">
+              <div className="absolute left-[4%] right-[4%] top-4 z-0 h-px bg-[linear-gradient(90deg,transparent,rgba(220,189,110,0.5)_8%,rgba(220,189,110,0.6)_50%,rgba(220,189,110,0.5)_92%,transparent)] shadow-[0_1px_2px_rgba(0,0,0,0.45)]" />
+              <span className="absolute left-[4%] top-4 z-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#231f1a]" />
+              <span className="absolute right-[4%] top-4 z-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#231f1a]" />
+              <div className="relative mx-auto mt-4 w-full max-w-[480px] origin-top -rotate-2">
+                <Clip className="absolute left-[24%] top-[-16px] z-20 h-[40px] w-[20px] -translate-x-1/2 drop-shadow-[0_3px_5px_rgba(0,0,0,0.5)]" />
+                <Clip className="absolute left-[76%] top-[-16px] z-20 h-[40px] w-[20px] -translate-x-1/2 drop-shadow-[0_3px_5px_rgba(0,0,0,0.5)]" />
+                <div className="bg-[#e9e3d6] p-[16px] shadow-[0_34px_70px_-24px_rgba(0,0,0,0.85)] max-[560px]:p-3">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-bg-2">
+                    <Thumbnail p={p} />
+                  </div>
+                  <div className="px-1 pt-3 text-center font-hand text-[30px] leading-tight text-[#2a2620]">{p.name}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-line px-10 py-10 max-[900px]:px-[22px] max-[900px]:py-8">
+          <div className="mx-auto grid max-w-[1320px] grid-cols-4 gap-8 max-[900px]:grid-cols-2 max-[900px]:gap-y-6 max-[560px]:grid-cols-1">
             {[
               { k: 'Client', v: p.client },
               { k: 'Role', v: p.role },
               { k: 'Stack', v: p.stack },
-              { k: 'Year', v: p.year },
+              { k: 'Year', v: String(p.year) },
             ].map((c) => (
-              <div className="flex flex-col gap-1.5" key={c.k}>
-                <div className="font-sans text-[11px] uppercase tracking-[0.11em] text-muted">{c.k}</div>
-                <div className="text-[17px] leading-[1.3] text-fg">{c.v}</div>
+              <div key={c.k}>
+                <div className="mb-1.5 font-sans text-[11px] uppercase tracking-[0.12em] text-muted">{c.k}</div>
+                <div className="font-sans text-[16px] leading-[1.3] text-fg">{c.v}</div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
         {sections.map((section, i) => (
           <div className="mx-auto grid max-w-[1320px] grid-cols-[200px_1fr] gap-[60px] px-10 py-[140px] max-[900px]:grid-cols-1 max-[900px]:gap-5 max-[900px]:px-[22px] max-[900px]:py-[60px]" key={i}>
-            <div className="sticky top-[120px] h-fit border-t border-accent pt-[14px] font-sans text-[11px] uppercase tracking-[0.13em] text-accent max-[900px]:static">
-              {section.label}
+            <div className="sticky top-[120px] h-fit border-t border-accent pt-[14px] max-[900px]:static">
+              <div className="font-sans text-[11px] uppercase tracking-[0.13em] text-accent">{section.label}</div>
+              <div className="mt-2 -rotate-2 font-hand text-[26px] leading-none text-fg-dim">field notes</div>
             </div>
             <div className="max-w-[62ch]">
-              {i === 0 && (
-                <p className="mb-10 font-sans text-[clamp(28px,3.2vw,44px)] font-medium leading-[1.18] tracking-[-0.02em] text-fg">
-                  {p.brief}
-                </p>
-              )}
-              <p className="mb-[22px] text-[18px] leading-[1.6] text-fg-dim">{section.body}</p>
+              <p className="text-[clamp(20px,2.4vw,28px)] leading-[1.5] text-fg">{section.body}</p>
             </div>
           </div>
         ))}
@@ -111,6 +123,7 @@ export function ProjectDetail({ slug }: { slug: string }) {
         <Gallery images={galleryImages} captions={galleryCaptions} name={p.name} />
 
         <div className="mx-auto max-w-[1320px] px-10 pb-[120px] pt-20 max-[900px]:px-[22px] max-[900px]:pb-[80px] max-[900px]:pt-[60px]">
+          <span className="mb-5 inline-block -rotate-2 font-hand text-[30px] leading-none text-accent-soft">keep browsing</span>
           <div className="grid grid-cols-2 gap-12 border-t border-line pt-12 max-[900px]:grid-cols-1 max-[900px]:gap-6">
             <div className="group">
               <span className="mb-[14px] block font-sans text-[11px] uppercase tracking-[0.11em] text-muted">{prev ? '← Previous' : '← Back'}</span>
