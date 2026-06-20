@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useContent } from '../content/store';
-import { WorkGallery3D } from '../components/WorkGallery3D';
+import { Thumbnail } from '../components/Thumbnail';
+import type { Project } from '../types';
+
+const ROT = ['-rotate-2', 'rotate-1', 'rotate-3', '-rotate-3', 'rotate-2', '-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-3'];
+const ASPECT = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[5/6]', 'aspect-[4/3]', 'aspect-[4/5]'];
+
+function useColumnCount() {
+  const [cols, setCols] = useState(3);
+  useEffect(() => {
+    const calc = () => setCols(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3);
+    calc();
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+  return cols;
+}
 
 export function Work() {
   const { works: PROJECTS, loading } = useContent();
   const [filter, setFilter] = useState('all');
+  const cols = useColumnCount();
   const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.tag === filter);
   const filters = [
     { key: 'all', label: `All (${PROJECTS.length})` },
@@ -13,18 +29,22 @@ export function Work() {
     { key: 'personal', label: `Personal (${PROJECTS.filter((p) => p.tag === 'personal').length})` },
   ];
 
+  const columns: { p: Project; i: number }[][] = Array.from({ length: cols }, () => []);
+  filtered.forEach((p, i) => columns[i % cols].push({ p, i }));
+
   return (
     <div data-screen-label="Work">
-      <section className="relative z-10 mx-auto max-w-[1320px] px-10 pt-[140px] max-[900px]:px-[22px] max-[900px]:pt-[100px]">
+      <section className="relative mx-auto max-w-[1320px] px-10 pt-[140px] pb-28 max-[900px]:px-[22px] max-[900px]:pt-[100px]">
         <div className="border-b border-line pb-[60px]">
           <h1 className="max-w-[18ch] font-sans text-[clamp(40px,5.6vw,80px)] font-semibold leading-[1.04] tracking-[-0.025em]">
             Projects
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-fg-dim">
-            Ten projects from 2021 to 2025. Client work, products, and personal tools.
+            Ten projects from 2021 to 2025, pinned up like a workbench rather than listed in a row.
           </p>
         </div>
-        <div className="mt-6 mb-2 flex flex-wrap gap-2">
+
+        <div className="mt-6 mb-12 flex flex-wrap gap-2">
           {filters.map((f) => (
             <button
               key={f.key}
@@ -40,12 +60,49 @@ export function Work() {
             </button>
           ))}
         </div>
+
+        {loading && PROJECTS.length === 0 ? (
+          <p className="text-sm text-fg-dim">Loading projects…</p>
+        ) : (
+          <div className="rounded-2xl bg-[radial-gradient(rgba(255,255,255,0.028)_1px,transparent_1px)] [background-size:22px_22px] px-2 py-8 sm:px-6">
+            <div className="flex gap-7 sm:gap-9">
+              {columns.map((col, ci) => (
+                <div key={ci} className="flex flex-1 flex-col gap-10">
+                  {col.map(({ p, i }) => (
+                    <a
+                      key={p.slug}
+                      href={'/work/' + p.slug}
+                      className={
+                        'group relative block origin-center transition-transform duration-300 ease-out hover:z-20 hover:rotate-0 hover:scale-[1.035] ' +
+                        ROT[i % ROT.length]
+                      }
+                    >
+                      <span className="pointer-events-none absolute -top-3 left-1/2 z-10 h-6 w-24 -translate-x-1/2 -rotate-2 bg-[rgba(220,189,110,0.32)] shadow-[0_1px_5px_rgba(0,0,0,0.35)]" />
+                      <div className="bg-[#e9e3d6] p-[14px] shadow-[0_18px_40px_-16px_rgba(0,0,0,0.7)] transition-shadow duration-300 group-hover:shadow-[0_34px_64px_-18px_rgba(0,0,0,0.85)]">
+                        <div className={'relative overflow-hidden bg-bg-2 ' + ASPECT[i % ASPECT.length]}>
+                          <Thumbnail p={p} />
+                          <span className="absolute left-2 top-2 z-[2] font-sans text-[10px] uppercase tracking-[0.12em] text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                            {p.num}
+                          </span>
+                          <span className="absolute right-2 top-2 z-[2] font-sans text-[10px] uppercase tracking-[0.12em] text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                            {p.tag}
+                          </span>
+                        </div>
+                        <div className="px-1 pt-3 text-center">
+                          <div className="font-hand text-[27px] leading-tight text-[#2a2620]">{p.name}</div>
+                          <div className="mt-1 font-sans text-[10px] uppercase tracking-[0.14em] text-[#8a7f6a]">
+                            {p.stack} · {p.year}
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
-      {loading && PROJECTS.length === 0 ? (
-        <p className="mx-auto max-w-[1320px] px-10 py-20 text-sm text-fg-dim">Loading projects…</p>
-      ) : (
-        <WorkGallery3D key={filter} projects={filtered} />
-      )}
     </div>
   );
 }

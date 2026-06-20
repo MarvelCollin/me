@@ -16,162 +16,18 @@
   nav.top .right {
     display: none;
   }
-  .page,
-  .contact {
+  .page {
     padding-left: 22px;
     padding-right: 22px;
     padding-top: 100px;
   }
-  .hero-meta {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .wt .row {
-    grid-template-columns: 30px 1fr 40px;
-  }
-  .wt .row .role,
-  .wt .row .year {
-    display: none;
-  }
-  .gallery3d {
-    perspective: none;
-    gap: 48px;
-  }
-  .card3d,
-  .card3d:first-child {
-    width: 100%;
-    margin-left: 0;
-  }
-  .card3d-face,
-  .card3d:nth-child(even) .card3d-face,
-  .card3d:nth-child(3n) .card3d-face {
-    transform: none;
-    border-radius: 12px;
-    aspect-ratio: 4/5;
-  }
-  .case .top {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  .case-meta {
-    grid-template-columns: 1fr 1fr;
-  }
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .skills-list {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .skill {
-    grid-template-columns: 100px 1fr;
-  }
-  .job {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .work-head {
-    grid-template-columns: 1fr;
-  }
-  .about-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  .hero-meta {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .hero-meta-right {
-    align-items: flex-start;
-    white-space: normal;
-  }
-  .contact-email {
-    font-size: clamp(24px, 6.5vw, 40px);
-  }
-  footer {
-    padding: 30px 22px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .story-hero {
-    height: 80vh;
-    padding: 0 22px 60px;
-  }
-  .story-meta .meta-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .story-act {
-    padding: 60px 22px;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .story-act .marker {
-    position: static;
-  }
-  .story-result {
-    padding: 60px 22px 40px;
-  }
-  .story-result .block {
-    padding: 32px;
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  .story-stills {
-    padding: 30px 22px;
-    grid-template-columns: 1fr;
-  }
-  .gallery {
-    padding: 30px 22px;
-  }
-  .gallery-thumbs {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .story-next {
-    padding: 60px 22px 80px;
-  }
-  .story-next .grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .story-next .nav-block.r {
-    text-align: left;
-  }
-  .story-back {
-    left: 22px;
-  }
 }
 @media (max-width: 560px) {
-  .page,
-  .contact {
+  .page {
     padding-top: 92px;
   }
   nav.top .brand {
     font-size: 15px;
-  }
-  .case-meta {
-    grid-template-columns: 1fr;
-  }
-  .about-strip {
-    grid-template-columns: 1fr;
-  }
-  .story-meta .meta-grid {
-    grid-template-columns: 1fr;
-  }
-  .skill {
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
-  .contact-links {
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  .contact-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .contact-actions .btn {
-    justify-content: center;
   }
   .adm-form .row2 {
     grid-template-columns: 1fr;

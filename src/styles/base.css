@@ -124,22 +124,6 @@ main {
   z-index: 200;
   background: var(--bg);
 }
-footer {
-  padding: 48px 40px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 13px;
-  color: var(--muted);
-  gap: 24px;
-  flex-wrap: wrap;
-  font-family: var(--font);
-  letter-spacing: 0.04em;
-}
-footer span a:hover {
-  color: var(--accent);
-}
 .btn {
   display: inline-flex;
   align-items: center;

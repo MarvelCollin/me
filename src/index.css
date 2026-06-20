@@ -1,10 +1,5 @@
 @import "tailwindcss";
 @import "./styles/base.css" layer(base);
-@import "./styles/home.css" layer(base);
-@import "./styles/work.css" layer(base);
-@import "./styles/project.css" layer(base);
-@import "./styles/about.css" layer(base);
-@import "./styles/contact.css" layer(base);
 @import "./styles/admin.css" layer(base);
 @import "./styles/responsive.css" layer(base);
 
@@ -20,4 +15,5 @@
   --color-accent: #c8a44a;
   --color-accent-soft: #dcbd6e;
   --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-hand: "Caveat", "Segoe Script", cursive;
 }
