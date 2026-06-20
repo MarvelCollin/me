@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useContent } from '../content';
+import { useContent } from '../content/use-content';
 import { Thumbnail } from '../components/thumbnail';
 import { useColumnCount } from '../hooks/use-column-count';
-import type { Project } from '../Interface';
+import type { Project } from '../Interface/IProject';
 
 const ROT = ['-rotate-2', 'rotate-1', 'rotate-3', '-rotate-3', 'rotate-2', '-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-3'];
 const ASPECT = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[5/6]', 'aspect-[4/3]', 'aspect-[4/5]'];

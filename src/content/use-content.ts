@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import type { Project } from '../Interface';
+import type { Project } from '../Interface/IProject';
 import type { ContentState } from '../Interface/IContentState';
 import { ContentContext } from './content-context';
 

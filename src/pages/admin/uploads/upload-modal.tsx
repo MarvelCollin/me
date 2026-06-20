@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ClipboardEvent, DragEvent } from 'react';
-import { uploadImage } from '../../lib/storage';
+import { uploadImage } from '../../../lib/storage';
 
 function filesFromClipboard(e: ClipboardEvent<HTMLDivElement>): File[] {
   return Array.from(e.clipboardData.items)
@@ -71,54 +71,6 @@ export function UploadModal({ title, multiple, onClose, onAdd }: { title: string
         {err && <p className="adm-err">{err}</p>}
         {multiple && <p className="modal-hint">Add as many as you like, then close.</p>}
       </div>
-    </div>
-  );
-}
-
-export function ImageDrop({ label, value, onChange }: { label: string; value: string; onChange: (url: string) => void }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="fld">
-      <span>{label}</span>
-      <button type="button" className="img-trigger" onClick={() => setOpen(true)}>
-        {value
-          ? <img src={value} alt="" className="img-prev" />
-          : <span className="img-hint">Click to add image</span>}
-      </button>
-      {value && (
-        <div className="img-row">
-          <button type="button" className="img-clear" onClick={() => onChange('')}>Remove</button>
-        </div>
-      )}
-      {open && <UploadModal title={label} multiple={false} onClose={() => setOpen(false)} onAdd={onChange} />}
-    </div>
-  );
-}
-
-export function MultiImageDrop({ label, value, onChange }: { label: string; value: string[]; onChange: (v: string[]) => void }) {
-  const [open, setOpen] = useState(false);
-  const valueRef = useRef(value);
-  valueRef.current = value;
-
-  const add = (url: string) => onChange([...valueRef.current, url]);
-  const remove = (i: number) => onChange(value.filter((_, j) => j !== i));
-
-  return (
-    <div className="fld">
-      <span>{label}</span>
-      {value.length > 0 && (
-        <div className="img-grid">
-          {value.map((url, i) => (
-            <div className="img-cell" key={i}>
-              <img src={url} alt="" />
-              <button type="button" onClick={() => remove(i)}>×</button>
-            </div>
-          ))}
-        </div>
-      )}
-      <button type="button" className="img-add" onClick={() => setOpen(true)}>+ Add images</button>
-      {open && <UploadModal title={label} multiple onClose={() => setOpen(false)} onAdd={add} />}
     </div>
   );
 }

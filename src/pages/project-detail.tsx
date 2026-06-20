@@ -1,7 +1,8 @@
-import { useContent, findWork, workIndex } from '../content';
+import { useContent, findWork, workIndex } from '../content/use-content';
 import { Thumbnail } from '../components/thumbnail';
 import { Gallery } from '../components/gallery';
-import { Clip, ClipDefs } from '../components/clip';
+import { Clip } from '../components/clip';
+import { ClipDefs } from '../components/clip-defs';
 
 const BACK_CLASS =
   'group fixed left-10 top-[84px] z-[60] font-sans text-[11px] uppercase tracking-[0.12em] text-fg-dim transition-colors hover:text-accent max-[900px]:left-[22px]';

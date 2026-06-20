@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useContent } from '../../content';
+import { useContent } from '../../content/use-content';
 import { ToastHost } from './toast';
 import { WorksSection } from './works-section';
 import { SkillsSection } from './skills-section';

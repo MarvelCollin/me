@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useContent, TONE_NAMES } from '../../content';
-import * as api from '../../lib/api';
-import type { Project } from '../../Interface';
+import { useContent } from '../../content/use-content';
+import { TONE_NAMES } from '../../content/tones';
+import { createWork, updateWork, deleteWork } from '../../lib/api/works';
+import type { WorkInput } from '../../lib/api/works';
+import type { Project } from '../../Interface/IProject';
 import type { WorkForm } from '../../Interface/IWorkForm';
-import { lines, unlines } from './utils';
-import { useToast } from './toast-context';
-import { TextField, AreaField, SelectField } from './fields';
-import { ImageDrop, MultiImageDrop } from './uploads';
+import { lines, unlines } from './lib/utils';
+import { useToast } from './lib/toast-context';
+import { TextField } from './fields/text-field';
+import { AreaField } from './fields/area-field';
+import { SelectField } from './fields/select-field';
+import { ImageDrop } from './uploads/image-drop';
+import { MultiImageDrop } from './uploads/multi-image-drop';
 
 const emptyWork: WorkForm = {
   slug: '', num: '', name: '', year: '', role: '', stack: '', client: '', tag: 'client',
@@ -24,7 +29,7 @@ function workToForm(p: Project): WorkForm {
   };
 }
 
-function formToWork(f: WorkForm): api.WorkInput {
+function formToWork(f: WorkForm): WorkInput {
   return {
     slug: f.slug.trim(), num: f.num.trim(), name: f.name.trim(), year: f.year.trim(),
     role: f.role.trim(), stack: f.stack.trim(), client: f.client.trim(), tag: f.tag,
@@ -50,8 +55,8 @@ export function WorksSection() {
     setBusy(true); setErr('');
     try {
       const input = formToWork(form);
-      if (editId) await api.updateWork(editId, input);
-      else await api.createWork(input);
+      if (editId) await updateWork(editId, input);
+      else await createWork(input);
       await refresh();
       toast(editId ? 'Project updated' : 'Project created');
       reset();
@@ -66,7 +71,7 @@ export function WorksSection() {
     if (!confirm('Delete this project?')) return;
     setBusy(true); setErr('');
     try {
-      await api.deleteWork(id);
+      await deleteWork(id);
       await refresh();
       toast('Project deleted');
       if (editId === id) reset();

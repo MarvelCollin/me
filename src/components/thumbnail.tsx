@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type { Project } from '../Interface';
+import type { Project } from '../Interface/IProject';
 import { TONES } from '../content/tones';
 import { img } from '../lib/img';
 

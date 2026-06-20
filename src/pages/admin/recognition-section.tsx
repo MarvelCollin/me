@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useContent } from '../../content';
-import * as api from '../../lib/api';
+import { useContent } from '../../content/use-content';
+import { createRecognition, updateRecognition, deleteRecognition } from '../../lib/api/recognition';
+import type { RecognitionInput } from '../../lib/api/recognition';
 import type { AwardForm } from '../../Interface/IAwardForm';
-import { useToast } from './toast-context';
-import { TextField } from './fields';
-import { ImageDrop } from './uploads';
+import { useToast } from './lib/toast-context';
+import { TextField } from './fields/text-field';
+import { ImageDrop } from './uploads/image-drop';
 
 const emptyAward: AwardForm = { yr: '', name: '', where: '', image: '' };
 
@@ -23,9 +24,9 @@ export function RecognitionSection() {
     e.preventDefault();
     setBusy(true); setErr('');
     try {
-      const input: api.RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), image: form.image.trim() || undefined };
-      if (editId) await api.updateRecognition(editId, input);
-      else await api.createRecognition(input);
+      const input: RecognitionInput = { yr: form.yr.trim(), name: form.name.trim(), where: form.where.trim(), image: form.image.trim() || undefined };
+      if (editId) await updateRecognition(editId, input);
+      else await createRecognition(input);
       await refresh();
       toast(editId ? 'Recognition updated' : 'Recognition created');
       reset();
@@ -40,7 +41,7 @@ export function RecognitionSection() {
     if (!confirm('Delete this recognition?')) return;
     setBusy(true); setErr('');
     try {
-      await api.deleteRecognition(id);
+      await deleteRecognition(id);
       await refresh();
       toast('Recognition deleted');
       if (editId === id) reset();

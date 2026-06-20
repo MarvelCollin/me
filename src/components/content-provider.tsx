@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Project, Skill, HistoryItem, Award, Education } from '../Interface';
-import { fetchWorks, fetchSkills, fetchExperience, fetchRecognition, fetchEducation } from '../lib/api';
-import { ContentContext } from './content-context';
+import type { Project } from '../Interface/IProject';
+import type { Skill } from '../Interface/ISkill';
+import type { HistoryItem } from '../Interface/IHistoryItem';
+import type { Award } from '../Interface/IAward';
+import type { Education } from '../Interface/IEducation';
+import { fetchWorks } from '../lib/api/works';
+import { fetchSkills } from '../lib/api/skills';
+import { fetchExperience } from '../lib/api/experience';
+import { fetchRecognition } from '../lib/api/recognition';
+import { fetchEducation } from '../lib/api/education';
+import { ContentContext } from '../content/content-context';
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [works, setWorks] = useState<Project[]>([]);

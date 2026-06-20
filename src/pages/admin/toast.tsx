@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ToastCtx } from './toast-context';
+import { ToastCtx } from './lib/toast-context';
 
 export function ToastHost({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<{ id: number; message: string }[]>([]);
