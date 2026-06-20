@@ -1,4 +1,4 @@
-import { useContent } from '../content/store';
+import { useContent } from '../content';
 import { img } from '../lib/img';
 
 export function About() {

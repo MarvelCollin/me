@@ -1,57 +1,15 @@
 import { supabase, TABLES } from './supabase';
-import type { Project, Skill, HistoryItem, Award, Education } from '../types';
+import type { Project, Skill, HistoryItem, Award, Education } from '../Interface';
+import type { WorkRow } from '../Interface/IWorkRow';
+import type { SkillRow } from '../Interface/ISkillRow';
+import type { ExperienceRow } from '../Interface/IExperienceRow';
+import type { RecognitionRow } from '../Interface/IRecognitionRow';
 
 export type WorkInput = Omit<Project, 'id'>;
 export type SkillInput = Omit<Skill, 'id' | 'sort'>;
 export type ExperienceInput = Omit<HistoryItem, 'id' | 'sort'>;
 export type RecognitionInput = Omit<Award, 'id' | 'sort'>;
 export type EducationInput = Omit<Education, 'id' | 'sort'>;
-
-interface WorkRow {
-  id: string;
-  slug: string;
-  num: string;
-  name: string;
-  year: string;
-  role: string;
-  stack: string;
-  client: string;
-  tag: string;
-  description: string;
-  brief: string;
-  body: string[];
-  result: string;
-  tone: string;
-  stills: string[];
-  cover: string | null;
-  images: string[] | null;
-  repo: string | null;
-}
-
-interface SkillRow {
-  id: string;
-  name: string;
-  opinion: string;
-  sort: number;
-}
-
-interface ExperienceRow {
-  id: string;
-  yr: string;
-  role: string;
-  place: string;
-  note: string;
-  sort: number;
-}
-
-interface RecognitionRow {
-  id: string;
-  yr: string;
-  name: string;
-  place: string;
-  image: string | null;
-  sort: number;
-}
 
 function rowToWork(r: WorkRow): Project {
   return {

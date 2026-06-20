@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import { ContentProvider } from './content/store.tsx';
-import { initNavInterception } from './utils/nav.ts';
+import App from './app';
+import { ContentProvider } from './content';
+import { initNavInterception } from './utils/nav';
 
 initNavInterception();
 

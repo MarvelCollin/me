@@ -1,4 +1,6 @@
-export function ClipDefs() {
+import { memo } from 'react';
+
+export const ClipDefs = memo(function ClipDefs() {
   return (
     <svg className="pointer-events-none absolute h-0 w-0" aria-hidden="true">
       <defs>
@@ -15,9 +17,9 @@ export function ClipDefs() {
       </defs>
     </svg>
   );
-}
+});
 
-export function Clip({ className = '' }: { className?: string }) {
+export const Clip = memo(function Clip({ className = '' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 56" fill="none" aria-hidden="true">
       <path
@@ -30,4 +32,4 @@ export function Clip({ className = '' }: { className?: string }) {
       <circle cx="12" cy="26" r="4.2" stroke="url(#clipSpring)" strokeWidth="1.7" fill="none" />
     </svg>
   );
-}
+});

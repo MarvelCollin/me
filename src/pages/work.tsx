@@ -1,27 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useContent } from '../content/store';
-import { Thumbnail } from '../components/Thumbnail';
-import type { Project } from '../types';
+import { useMemo, useState } from 'react';
+import { useContent } from '../content';
+import { Thumbnail } from '../components/thumbnail';
+import { useColumnCount } from '../hooks/use-column-count';
+import type { Project } from '../Interface';
 
 const ROT = ['-rotate-2', 'rotate-1', 'rotate-3', '-rotate-3', 'rotate-2', '-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-3'];
 const ASPECT = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[5/6]', 'aspect-[4/3]', 'aspect-[4/5]'];
-
-function useColumnCount() {
-  const [cols, setCols] = useState(3);
-  useEffect(() => {
-    const calc = () => setCols(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3);
-    calc();
-    window.addEventListener('resize', calc);
-    return () => window.removeEventListener('resize', calc);
-  }, []);
-  return cols;
-}
 
 export function Work() {
   const { works: PROJECTS, loading } = useContent();
   const [filter, setFilter] = useState('all');
   const cols = useColumnCount();
-  const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.tag === filter);
+  const filtered = useMemo(
+    () => (filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.tag === filter)),
+    [PROJECTS, filter],
+  );
   const filters = [
     { key: 'all', label: `All (${PROJECTS.length})` },
     { key: 'client', label: `Client (${PROJECTS.filter((p) => p.tag === 'client').length})` },
@@ -29,8 +22,11 @@ export function Work() {
     { key: 'personal', label: `Personal (${PROJECTS.filter((p) => p.tag === 'personal').length})` },
   ];
 
-  const columns: { p: Project; i: number }[][] = Array.from({ length: cols }, () => []);
-  filtered.forEach((p, i) => columns[i % cols].push({ p, i }));
+  const columns = useMemo(() => {
+    const out: { p: Project; i: number }[][] = Array.from({ length: cols }, () => []);
+    filtered.forEach((p, i) => out[i % cols].push({ p, i }));
+    return out;
+  }, [filtered, cols]);
 
   return (
     <div data-screen-label="Work">

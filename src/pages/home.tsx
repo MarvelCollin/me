@@ -1,29 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useContent, findWork } from '../content/store';
-import { Thumbnail } from '../components/Thumbnail';
-import type { Project } from '../types';
+import { useMemo } from 'react';
+import { useContent, findWork } from '../content';
+import { Thumbnail } from '../components/thumbnail';
+import { useColumnCount } from '../hooks/use-column-count';
+import type { Project } from '../Interface';
 
 const ROT = ['-rotate-2', 'rotate-1', 'rotate-3', '-rotate-3', 'rotate-2', '-rotate-1'];
 const ASPECT = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[5/6]', 'aspect-[4/3]', 'aspect-[4/5]'];
-
-function useColumnCount() {
-  const [cols, setCols] = useState(3);
-  useEffect(() => {
-    const calc = () => setCols(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3);
-    calc();
-    window.addEventListener('resize', calc);
-    return () => window.removeEventListener('resize', calc);
-  }, []);
-  return cols;
-}
 
 export function Home() {
   const { works } = useContent();
   const feature = findWork(works, 'tetrimosuv');
   const cols = useColumnCount();
-  const selected = works.slice(0, 6);
-  const columns: { p: Project; i: number }[][] = Array.from({ length: cols }, () => []);
-  selected.forEach((p, i) => columns[i % cols].push({ p, i }));
+  const selected = useMemo(() => works.slice(0, 6), [works]);
+  const columns = useMemo(() => {
+    const out: { p: Project; i: number }[][] = Array.from({ length: cols }, () => []);
+    selected.forEach((p, i) => out[i % cols].push({ p, i }));
+    return out;
+  }, [selected, cols]);
 
   return (
     <div data-screen-label="Home">

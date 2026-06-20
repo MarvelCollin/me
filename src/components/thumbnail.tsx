@@ -1,8 +1,9 @@
-import type { Project } from '../types';
+import { memo } from 'react';
+import type { Project } from '../Interface';
 import { TONES } from '../content/tones';
 import { img } from '../lib/img';
 
-export function Thumbnail({ p }: { p: Project }) {
+export const Thumbnail = memo(function Thumbnail({ p }: { p: Project }) {
   if (p.cover) {
     return (
       <span className="ph-wrap" style={{ position: 'absolute', inset: 0, display: 'block' }}>
@@ -23,4 +24,4 @@ export function Thumbnail({ p }: { p: Project }) {
       <span className="ph-tex"></span>
     </span>
   );
-}
+});

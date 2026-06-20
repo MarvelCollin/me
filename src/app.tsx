@@ -1,13 +1,14 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { useRoute } from './hooks/useRoute';
-import { parseRoute, runTransition } from './utils/routes';
-import { Home } from './pages/Home';
-import { Work } from './pages/Work';
-import { ProjectDetail } from './pages/ProjectDetail';
-import { About } from './pages/About';
-import { Contact } from './pages/Contact';
+import { useRoute } from './hooks/use-route';
+import { parseRoute } from './utils/parse-route';
+import { runTransition } from './utils/page-transition';
+import { Home } from './pages/home';
+import { Work } from './pages/work';
+import { ProjectDetail } from './pages/project-detail';
+import { About } from './pages/about';
+import { Contact } from './pages/contact';
 
-const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
+const Admin = lazy(() => import('./pages/admin').then((m) => ({ default: m.Admin })));
 
 function App() {
   const route = useRoute();
@@ -28,7 +29,7 @@ function App() {
 
   useEffect(() => {
     if (route === renderRoute) return;
-    runTransition(route).then(() => {
+    runTransition().then(() => {
       setRenderRoute(route);
       window.scrollTo(0, 0);
     });
